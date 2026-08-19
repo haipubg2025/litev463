@@ -1365,6 +1365,52 @@ CHỈ TRẢ VỀ JSON THUẦN TÚY, TUYỆT ĐỐI KHÔNG BỌC TRONG MARKDOWN H
     return "";
   };
 
+  const getValidPendingUpdatesCount = () => {
+    if (!editedData?.pendingUpdates) return 0;
+    
+    const defaultFields = [
+      "fullname", "gender", "age", "dob", "height", "weight", "measurements", "rank", "occupation",
+      "appearance", "appearancelite", "distinguishingfeatures", 
+      "personality", "personalitycore", "philosophy", "goal", 
+      "innersecret", "impression", "background", "relationships", 
+      "powers", "skills", "inventory", "preferences", "needs", "needssfw", "needsnsfw",
+      "likesdislikesfears", "likesdislikesfearsnsfw", "loveviews", "experience", 
+      "nsfwpersonality", "nsfwreactions", "literarydescription", "titles",
+      "id", "name", "role", "avatar", "objectives", "partylist"
+    ];
+
+    const getOriginalValLocal = (key: string) => {
+      if (isBuiltInField(key)) {
+        return editedData ? editedData[key] : undefined;
+      }
+      if (editedData && editedData.customData && editedData.customData[key] !== undefined) {
+        return editedData.customData[key];
+      }
+      return editedData ? editedData[key] : undefined;
+    };
+
+    return Object.keys(editedData.pendingUpdates).filter(key => {
+      const keyLower = key.trim().toLowerCase();
+      if (['location', 'currentlocation', 'status', 'statusdata'].includes(keyLower)) return false;
+      
+      const isCustomModeLocal = type === "mc" ? gameData?.mcTemplateMode === "custom" : gameData?.npcTemplateMode === "custom";
+      let isAllowed = false;
+      if (isCustomModeLocal) {
+         isAllowed = customFields.some((f: any) => f.id.toLowerCase() === keyLower) || ["id", "name", "role", "avatar", "objectives", "partylist"].includes(keyLower);
+      } else {
+         isAllowed = defaultFields.includes(keyLower);
+      }
+      
+      if (!isAllowed) return false;
+
+      const origVal = getOriginalValLocal(key);
+      const pendingVal = editedData.pendingUpdates[key];
+      return JSON.stringify(pendingVal) !== JSON.stringify(origVal);
+    }).length;
+  };
+
+  const validPendingCount = getValidPendingUpdatesCount();
+
   const openTemplateConfig = () => {
     const currentMode = type === "mc" ? (gameData?.mcTemplateMode || "default") : (gameData?.npcTemplateMode || "default");
     setTempTemplateMode(currentMode);
@@ -1867,28 +1913,22 @@ LƯU Ý:
                   <>
                     <button
                       onClick={() => setShowConfirmUpdateModal(true)}
-                      disabled={
-                        !editedData?.pendingUpdates ||
-                        !Object.keys(editedData.pendingUpdates).some(k => !['location', 'currentlocation', 'status', 'statusdata'].includes(k.trim().toLowerCase()))
-                      }
+                      disabled={validPendingCount === 0}
                       className={`flex-1 font-bold py-3 px-4 rounded-xl shadow-lg transform transition flex items-center justify-center gap-2 disabled:cursor-not-allowed ${
-                        editedData?.pendingUpdates &&
-                        Object.keys(editedData.pendingUpdates).some(k => !['location', 'currentlocation', 'status', 'statusdata'].includes(k.trim().toLowerCase()))
+                        validPendingCount > 0
                           ? "bg-green-500 hover:bg-green-600 text-white shadow-green-500/20 hover:-translate-y-1 active:translate-y-0"
                           : "bg-slate-500/50 text-white/50 shadow-slate-500/20"
                       }`}
                     >
                       <Check size={18} />{" "}
-                      {editedData?.pendingUpdates &&
-                      Object.keys(editedData.pendingUpdates).some(k => !['location', 'currentlocation', 'status', 'statusdata'].includes(k.trim().toLowerCase()))
+                      {validPendingCount > 0
                         ? type === "mc"
                           ? "Xác Nhận Update MC"
                           : "Xác Nhận Update NPC"
                         : "Không có Update mới"}
-                      {editedData?.pendingUpdates &&
-                        Object.keys(editedData.pendingUpdates).some(k => !['location', 'currentlocation', 'status', 'statusdata'].includes(k.trim().toLowerCase())) && (
+                      {validPendingCount > 0 && (
                           <span className="bg-white text-green-600 text-xs px-2 py-0.5 rounded-full">
-                            {Object.keys(editedData.pendingUpdates).filter(k => !['location', 'currentlocation', 'status', 'statusdata'].includes(k.trim().toLowerCase())).length}
+                            {validPendingCount}
                           </span>
                         )}
                     </button>

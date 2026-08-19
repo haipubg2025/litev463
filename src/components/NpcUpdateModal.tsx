@@ -479,7 +479,8 @@ export default function NpcUpdateModal({ npc, npcIndex, onClose, onApply }: NpcU
     } else {
       // Trong chế độ mặc định, chỉ cho phép các trường thuộc bảng mặc định
       const defaultFields = [
-        "fullname", "appearance", "appearancelite", "distinguishingfeatures", 
+        "fullname", "gender", "age", "dob", "height", "weight", "measurements", "rank", "occupation",
+        "appearance", "appearancelite", "distinguishingfeatures", 
         "personality", "personalitycore", "philosophy", "goal", 
         "innersecret", "impression", "background", "relationships", 
         "powers", "skills", "inventory", "preferences", "needs", "needssfw", "needsnsfw",
