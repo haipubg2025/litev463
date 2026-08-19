@@ -88,11 +88,27 @@ function EditableField({
   const theme = useStore((state) => state.theme);
   const isDark = theme.group === "Dark";
   
-  const safeValue = typeof value === "object" && value !== null ? JSON.stringify(value, null, 2) : String(value || "");
+  const getSafeValue = (val: any) => {
+    if (!val) return "";
+    if (typeof val === "string") return val;
+    if (Array.isArray(val)) {
+      if (val.length === 0) return "";
+      // Nếu là mảng các chuỗi, ghép lại bằng dấu xuống dòng cho đẹp
+      if (val.every((v) => typeof v === "string")) {
+        return val.join("\n");
+      }
+    }
+    if (typeof val === "object" && val !== null) {
+      return JSON.stringify(val, null, 2);
+    }
+    return String(val);
+  };
+
+  const safeValue = getSafeValue(value);
   const [localValue, setLocalValue] = React.useState(safeValue);
 
   React.useEffect(() => {
-    setLocalValue(typeof value === "object" && value !== null ? JSON.stringify(value, null, 2) : String(value || ""));
+    setLocalValue(getSafeValue(value));
   }, [value]);
 
   return (

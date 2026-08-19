@@ -1431,6 +1431,7 @@ Dưới đây là các thông tin hiện tại trong các ô nhập liệu (nế
 
 Dựa vào ý tưởng dành riêng cho NPCs và BỐI CẢNH TỔNG THỂ ở trên, hãy thiết kế và tạo mới các nhân vật phụ (NPCs). 
 BẮT BUỘC KHÔNG ĐƯỢC TRÙNG TÊN VỚI CÁC NPC ĐÃ CÓ TRONG DANH SÁCH (nếu có).
+LƯU Ý CỰC KỲ QUAN TRỌNG VỀ SỰ ĐỘC BẢN CỦA TỪNG NPC MỚI: BẠN BẮT BUỘC PHẢI SÁNG TẠO MỚI HOÀN TOÀN TỪNG NHÂN VẬT, NGHIÊM CẤM VIỆC "SAO CHÉP, COPY, XÀO NẤU" LẠI CÁC NPC ĐÃ CÓ (như copy paste profile cũ rồi chỉ đổi tên/đổi chút ngoại hình). Cấm sự lười biếng lặp lại các khuôn mẫu. Mọi NPC mới sinh ra đều phải là MỘT CÁ THỂ MỚI CÓ BẢN SẮC, SỨC MẠNH, VÀ TÂM LÝ ĐỘC LẬP - TRỪ KHI trong Ý tưởng người chơi có dặn rõ ràng là bắt buộc phải copy hoặc nhân bản từ ai đó.
 Dữ liệu trả về PHẢI là một object JSON duy nhất với cấu trúc chính xác sau:
 {
   "newNpcs": [${dynamicNpcSingleSchemaStr}]
