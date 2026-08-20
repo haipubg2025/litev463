@@ -4042,6 +4042,9 @@ ${dramaPromptText ? `- GỢI Ý/YÊU CẦU KỊCH TÍNH TỪ NGƯỜI CHƠI (AI 
   };
 
   const handleDownloadSave = async () => {
+    if (playerRulesRef.current !== playerRules) {
+      setPlayerRules(playerRulesRef.current);
+    }
     const state = useStore.getState();
     if (!state.gameData) return;
 
@@ -4059,6 +4062,14 @@ ${dramaPromptText ? `- GỢI Ý/YÊU CẦU KỊCH TÍNH TỪ NGƯỜI CHƠI (AI 
 
     const currentId = state.gameData.id || Date.now().toString();
     const ragMemories = await ragService.getMemories(currentId);
+    const activeRules = playerRulesRef.current || state.playerRules || state.gameData.playerRules || "";
+    const activeSuggestionsConfig = state.actionSuggestionsConfig || state.gameData.actionSuggestionsConfig || "";
+
+    const enrichedGameData = {
+      ...state.gameData,
+      playerRules: activeRules,
+      actionSuggestionsConfig: activeSuggestionsConfig,
+    };
 
     const saveObj = {
       id: currentId,
@@ -4066,8 +4077,10 @@ ${dramaPromptText ? `- GỢI Ý/YÊU CẦU KỊCH TÍNH TỪ NGƯỜI CHƠI (AI 
       createdAt: Date.now(),
       updatedAt: Date.now(),
       messages: state.messages,
-      gameData: state.gameData,
+      gameData: enrichedGameData,
       ragMemories: ragMemories,
+      playerRules: activeRules,
+      actionSuggestionsConfig: activeSuggestionsConfig,
     };
 
     setTimeout(() => {

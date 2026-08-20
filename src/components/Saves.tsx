@@ -218,16 +218,30 @@ export default function Saves() {
                        <button
                          onClick={(e) => {
                            e.stopPropagation();
-                           setTimeout(() => { const blob = new Blob([JSON.stringify(save, null, 2)], { type: "application/json" });
-                           const url = URL.createObjectURL(blob);
-                           const a = document.createElement('a');
-                           a.href = url;
-                           a.download = save.name + ".json";
-                           document.body.appendChild(a);
-                           a.click();
-                           document.body.removeChild(a);
-                           URL.revokeObjectURL(url);
-                           toast.success("Đã tải tệp lưu về máy!"); }, 50);
+setTimeout(() => {
+                            const activeRules = save.playerRules !== undefined ? save.playerRules : (save.gameData?.playerRules || save.gameData?.worldCreation?.playerRules || "");
+                            const activeSuggestions = save.actionSuggestionsConfig !== undefined ? save.actionSuggestionsConfig : (save.gameData?.actionSuggestionsConfig || "");
+                            const saveToDownload = {
+                              ...save,
+                              playerRules: activeRules,
+                              actionSuggestionsConfig: activeSuggestions,
+                              gameData: save.gameData ? {
+                                ...save.gameData,
+                                playerRules: activeRules,
+                                actionSuggestionsConfig: activeSuggestions,
+                              } : save.gameData,
+                            };
+                            const blob = new Blob([JSON.stringify(saveToDownload, null, 2)], { type: "application/json" });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a");
+                            a.href = url;
+                            a.download = save.name + ".json";
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                            toast.success("Đã tải tệp lưu về máy!");
+                          }, 50);
                          }}
                          className={`p-2.5 rounded-lg border transition-colors ${
                             isDark

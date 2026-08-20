@@ -783,6 +783,9 @@ export const useStore = create<GameState>()(
       setPlayerRules: (rules) =>
         set((state) => {
           state.playerRules = rules;
+          if (state.gameData) {
+            state.gameData.playerRules = rules;
+          }
         }),
       setTheme: (themeId) =>
         set((state) => {
@@ -1028,6 +1031,9 @@ export const useStore = create<GameState>()(
       setActionSuggestionsConfig: (config) =>
         set((state) => {
           state.actionSuggestionsConfig = config;
+          if (state.gameData) {
+            state.gameData.actionSuggestionsConfig = config;
+          }
         }),
       showTitles: true,
       setShowTitles: (show) =>
@@ -1230,6 +1236,12 @@ export const useStore = create<GameState>()(
             if (!updatedData.id) {
               updatedData.id = Date.now().toString();
             }
+            if (updatedData.playerRules === undefined && state.playerRules !== undefined) {
+              updatedData.playerRules = state.playerRules;
+            }
+            if (updatedData.actionSuggestionsConfig === undefined && state.actionSuggestionsConfig !== undefined) {
+              updatedData.actionSuggestionsConfig = state.actionSuggestionsConfig;
+            }
             updatedData = sanitizeGameData(updatedData);
           }
           state.gameData = updatedData;
@@ -1421,19 +1433,27 @@ export const useStore = create<GameState>()(
             } else {
               draft.dramaPrompt = "";
             }
-            if (s.playerRules !== undefined) {
+            if (s.playerRules !== undefined && s.playerRules !== null) {
               draft.playerRules = s.playerRules;
-            } else if (s.gameData && s.gameData.playerRules !== undefined) {
+            } else if (s.gameData && s.gameData.playerRules !== undefined && s.gameData.playerRules !== null) {
               draft.playerRules = s.gameData.playerRules;
-            } else if (s.gameData && s.gameData.worldCreation && s.gameData.worldCreation.playerRules !== undefined) {
+            } else if (s.gameData && s.gameData.worldCreation && s.gameData.worldCreation.playerRules !== undefined && s.gameData.worldCreation.playerRules !== null) {
               draft.playerRules = s.gameData.worldCreation.playerRules;
             } else {
               draft.playerRules = "";
             }
-            if (s.actionSuggestionsConfig !== undefined) {
+            if (draft.gameData) {
+              draft.gameData.playerRules = draft.playerRules;
+            }
+            if (s.actionSuggestionsConfig !== undefined && s.actionSuggestionsConfig !== null) {
               draft.actionSuggestionsConfig = s.actionSuggestionsConfig;
+            } else if (s.gameData && s.gameData.actionSuggestionsConfig !== undefined && s.gameData.actionSuggestionsConfig !== null) {
+              draft.actionSuggestionsConfig = s.gameData.actionSuggestionsConfig;
             } else {
               draft.actionSuggestionsConfig = "";
+            }
+            if (draft.gameData) {
+              draft.gameData.actionSuggestionsConfig = draft.actionSuggestionsConfig;
             }
             const lastAiMsg = [...s.messages]
               .reverse()
@@ -1544,19 +1564,27 @@ export const useStore = create<GameState>()(
             } else {
               draft.dramaPrompt = "";
             }
-            if (latest.playerRules !== undefined) {
+            if (latest.playerRules !== undefined && latest.playerRules !== null) {
               draft.playerRules = latest.playerRules;
-            } else if (latest.gameData && latest.gameData.playerRules !== undefined) {
+            } else if (latest.gameData && latest.gameData.playerRules !== undefined && latest.gameData.playerRules !== null) {
               draft.playerRules = latest.gameData.playerRules;
-            } else if (latest.gameData && latest.gameData.worldCreation && latest.gameData.worldCreation.playerRules !== undefined) {
+            } else if (latest.gameData && latest.gameData.worldCreation && latest.gameData.worldCreation.playerRules !== undefined && latest.gameData.worldCreation.playerRules !== null) {
               draft.playerRules = latest.gameData.worldCreation.playerRules;
             } else {
               draft.playerRules = "";
             }
-            if (latest.actionSuggestionsConfig !== undefined) {
+            if (draft.gameData) {
+              draft.gameData.playerRules = draft.playerRules;
+            }
+            if (latest.actionSuggestionsConfig !== undefined && latest.actionSuggestionsConfig !== null) {
               draft.actionSuggestionsConfig = latest.actionSuggestionsConfig;
+            } else if (latest.gameData && latest.gameData.actionSuggestionsConfig !== undefined && latest.gameData.actionSuggestionsConfig !== null) {
+              draft.actionSuggestionsConfig = latest.gameData.actionSuggestionsConfig;
             } else {
               draft.actionSuggestionsConfig = "";
+            }
+            if (draft.gameData) {
+              draft.gameData.actionSuggestionsConfig = draft.actionSuggestionsConfig;
             }
             const lastAiMsg = [...latest.messages]
               .reverse()
@@ -1655,6 +1683,12 @@ export const useStore = create<GameState>()(
       }),
       merge: (persistedState: any, currentState: GameState) => {
         const merged = { ...currentState, ...persistedState };
+        if (persistedState.playerRules !== undefined && persistedState.playerRules !== null) {
+          merged.playerRules = persistedState.playerRules;
+        }
+        if (persistedState.actionSuggestionsConfig !== undefined && persistedState.actionSuggestionsConfig !== null) {
+          merged.actionSuggestionsConfig = persistedState.actionSuggestionsConfig;
+        }
         if (persistedState.theme?.id) {
           merged.theme =
             THEMES.find((t) => t.id === persistedState.theme.id) ||

@@ -1716,6 +1716,8 @@ LƯU Ý QUAN TRỌNG: Hãy tạo ra ĐỦ số lượng Location như được y
       disableDefaultNpcRelationships: worldCreation.disableDefaultNpcRelationships || false,
       customMcFields: worldCreation.customMcFields,
       customNpcFields: worldCreation.customNpcFields,
+      playerRules: playerRules || "",
+      actionSuggestionsConfig: useStore.getState().actionSuggestionsConfig || "",
     });
     setTimeout(() => {
       navigate("/gameplay");
