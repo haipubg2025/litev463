@@ -842,21 +842,6 @@ Kết quả cuối cùng phải là JSON hợp lệ khớp với schema nhân v�
     yield* this.generateStreamingContent(prompt, schema, systemInstruction);
   }
 
-  async *analyzePromptPresetStream(content: string) {
-    const systemInstruction = `Bạn là một chuyên gia phân tích và dịch thuật hệ thống (System Prompt / AI Presets). 
-Bạn được cung cấp nội dung của một tệp JSON hoặc TXT thường dùng cho SillyTavern hoặc AI Chat (prompt, preset, character book...).
-Nhiệm vụ của bạn là:
-1. Đọc hiểu toàn bộ cấu trúc và chức năng của nó.
-2. Trích xuất các trường quan trọng (Ví dụ: System Prompt, Main Prompt, Post History Instructions, Personality, v.v.).
-3. Dịch thuật các phần tiếng Anh sang tiếng Việt một cách dễ hiểu, giữ nguyên ý nghĩa chuyên môn.
-4. Chuyển đổi và tổ chức lại thành một định dạng văn bản rõ ràng, rành mạch để có thể áp dụng trực tiếp làm "luật chơi" (Player Rules) hoặc "ngữ cảnh" (Context) cho trò chơi nhập vai này.
-5. Loại bỏ các tham số kỹ thuật không cần thiết (như top_k, temperature) và CHỈ giữ lại các chỉ dẫn về mặt nội dung, hành vi, bối cảnh, prompt.
-
-Trả về kết quả bằng tiếng Việt, trình bày thật đẹp và gọn gàng, sử dụng Markdown (tiêu đề, gạch đầu dòng). KHÔNG CẦN định dạng JSON. BUNG HẾT SỨC MẠNH tư duy phân tích và viết lách của Gemini 3.1 Pro!`;
-    const prompt = `Đây là nội dung tệp (JSON/TXT) cần phân tích:\n\n\`\`\`\n${content}\n\`\`\`\n\nHãy phân tích, dịch thuật và tổng hợp lại thành các quy tắc / ngữ cảnh để sử dụng cho game.`;
-    yield* this.generateStreamingContent(prompt, undefined, systemInstruction);
-  }
-
   async *summarizeWorldStateStream(logs: string) {
     const systemInstruction = `Bạn là một chuyên gia quản lý trạng thái trò chơi chạy trên kiến trúc Gemini 3.1 Pro Preview với sức mạnh cường đại. Hãy tóm tắt cuốn chiếu các sự kiện đã diễn ra và trích xuất thành một đoạn miêu tả Trạng Thái Thế Giới (worldState) ngắn gọn nhưng đầy đủ thông số. BUNG HẾT SỨC MẠNH tư duy phân tích của bạn.`;
     const prompt = `Dưới đây là lịch sử tóm tắt các sự kiện đã diễn ra:\n\n${logs}\n\nHãy tổng hợp lại và cho biết trạng thái mới nhất của MC và Thế Giới xung quanh (đồ đạc đang cầm, tình trạng cơ thể, vị trí đứng, những NPC nào đang ở cạnh, diễn biến cuối). Đầu ra của bạn BẮT BUỘC theo cấu trúc JSON định dạng:\n\`\`\`json\n{\n  "worldState": "Nội dung tóm tắt trạng thái ở đây..."\n}\n\`\`\``;

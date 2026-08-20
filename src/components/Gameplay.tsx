@@ -3123,7 +3123,7 @@ ${dramaPromptText ? `- GỢI Ý/YÊU CẦU KỊCH TÍNH TỪ NGƯỜI CHƠI (AI 
 
     const activePresetsText = (useStore.getState().promptPresets || [])
       .filter((p) => p.isActive)
-      .map((p) => `\n--- [PRESET: ${p.name}] ---\n${p.analyzedContent || p.content}\n------------------------\n`)
+      .map((p) => `\n--- [PRESET: ${p.name}] ---\n${p.content}\n------------------------\n`)
       .join("");
     const finalPlayerRules = (playerRules || "") + activePresetsText;
 

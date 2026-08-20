@@ -181,8 +181,7 @@ export function getActiveSillyTavernConfig(): {
       );
     } else {
       // Nếu preset thô không parse được prompt cụ thể (hoặc là tệp văn bản thô), ta dùng toàn bộ nội dung của nó làm chỉ thị
-      // Nếu đã có analyzedContent từ AI thì ưu tiên dùng analyzedContent để gọn gàng hơn, ngược lại dùng content thô
-      const textPrompt = preset.analyzedContent || preset.content;
+      const textPrompt = preset.content;
       if (textPrompt && textPrompt.trim() && !textPrompt.trim().startsWith("{")) {
         config.mergedSystemPrompts.push(
           `--- CHỈ THỊ TRỰC TIẾP TỪ PRESET SILLYTAVERN [${preset.name}] ---\n${textPrompt}`

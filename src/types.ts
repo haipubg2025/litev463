@@ -480,8 +480,6 @@ export interface PromptPreset {
   id: string;
   name: string;
   content: string;
-  analyzedContent?: string;
-  isAnalyzing?: boolean;
   isActive: boolean;
   createdAt: number;
 }

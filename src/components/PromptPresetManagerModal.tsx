@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Upload, FileText, Trash2, Brain, ChevronDown, ChevronUp } from 'lucide-react';
+import { X, Upload, FileText, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { toast } from 'sonner';
-import { aiService } from '../services/aiService';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
@@ -55,25 +54,6 @@ export default function PromptPresetManagerModal({ isOpen, onClose }: PromptPres
     };
     reader.readAsText(file);
     e.target.value = '';
-  };
-
-  const analyzePreset = async (id: string, content: string) => {
-    try {
-      updatePromptPreset(id, { isAnalyzing: true, analyzedContent: '' });
-      const stream = aiService.analyzePromptPresetStream(content);
-      let fullResponse = '';
-      for await (const chunk of stream) {
-        if (chunk.text) {
-          fullResponse += chunk.text;
-          updatePromptPreset(id, { analyzedContent: fullResponse });
-        }
-      }
-      updatePromptPreset(id, { isAnalyzing: false });
-      toast.success('Phân tích hoàn tất!');
-    } catch (error: any) {
-      updatePromptPreset(id, { isAnalyzing: false });
-      toast.error('Lỗi phân tích: ' + error.message);
-    }
   };
 
   const moveUp = (index: number) => {
@@ -163,7 +143,7 @@ export default function PromptPresetManagerModal({ isOpen, onClose }: PromptPres
                           <div className="min-w-0 flex-1">
                             <h3 className={`font-bold text-lg truncate ${theme.textPrimary}`}>{preset.name}</h3>
                             <p className={`text-xs truncate ${theme.textSecondary}`}>
-                              {preset.analyzedContent ? 'Đã phân tích (AI)' : 'Nguyên bản'} • ID: {preset.id}
+                              Nguyên bản • ID: {preset.id}
                             </p>
                           </div>
                         </div>
@@ -204,20 +184,6 @@ export default function PromptPresetManagerModal({ isOpen, onClose }: PromptPres
                                 </div>
                                 <div className="flex flex-wrap items-center gap-2">
                                   <button
-                                    onClick={() => {
-                                      if (!preset.isAnalyzing) analyzePreset(preset.id, preset.content);
-                                    }}
-                                    disabled={preset.isAnalyzing}
-                                    className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
-                                      preset.isAnalyzing 
-                                        ? 'bg-purple-500/50 text-white cursor-not-allowed opacity-70' 
-                                        : 'bg-purple-500 text-white hover:bg-purple-600 shadow-md shadow-purple-500/20'
-                                    }`}
-                                  >
-                                    <Brain size={16} className={preset.isAnalyzing ? 'animate-pulse' : ''} />
-                                    {preset.isAnalyzing ? 'Đang Phân Tích...' : 'AI Phân Tích'}
-                                  </button>
-                                  <button
                                     onClick={() => togglePromptPreset(preset.id)}
                                     className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
                                       preset.isActive
@@ -241,17 +207,9 @@ export default function PromptPresetManagerModal({ isOpen, onClose }: PromptPres
 
                               {/* Content Viewer */}
                               <div className={`p-4 rounded-xl text-sm font-mono overflow-y-auto max-h-[400px] ${isDark ? 'bg-black/40 text-gray-300' : 'bg-white/60 text-gray-700'} border ${isDark ? 'border-white/5' : 'border-black/5'}`}>
-                                {preset.analyzedContent ? (
-                                  <div className={`markdown-body prose ${isDark ? 'prose-invert' : ''} max-w-none text-sm`}>
-                                    <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-                                      {preset.analyzedContent}
-                                    </ReactMarkdown>
-                                  </div>
-                                ) : (
-                                  <pre className="whitespace-pre-wrap font-mono text-xs opacity-70">
-                                    {preset.content}
-                                  </pre>
-                                )}
+                                <pre className="whitespace-pre-wrap font-mono text-xs opacity-70">
+                                  {preset.content}
+                                </pre>
                               </div>
                             </div>
                           </motion.div>
