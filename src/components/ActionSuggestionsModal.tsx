@@ -22,7 +22,7 @@ export default function ActionSuggestionsModal({
     if (isOpen) {
       setLocalConfig(actionSuggestionsConfig || "");
     }
-  }, [isOpen]);
+  }, [isOpen, actionSuggestionsConfig]);
 
   if (!isOpen) return null;
 
@@ -81,7 +81,6 @@ export default function ActionSuggestionsModal({
             <textarea
               value={localConfig}
               onChange={(e) => setLocalConfig(e.target.value)}
-              onBlur={() => setActionSuggestionsConfig(localConfig)}
               placeholder=""
               className={`w-full h-40 p-4 rounded-xl outline-none transition-colors resize-none ${
                 isDark

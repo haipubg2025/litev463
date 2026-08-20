@@ -112,13 +112,19 @@ function EditableField({
   }, [value]);
 
   return (
-    <div className={`flex flex-col gap-1 ${className}`}>
+    <div 
+      id={`char-field-container-${field}`}
+      data-field-key={field}
+      data-ai-field-name={field}
+      className={`flex flex-col gap-1 ${className}`}
+    >
       {label && (
         <div className="flex items-center justify-between">
           <span
             className={`text-[10px] uppercase tracking-widest ${isDark ? "text-white/40" : `${theme.textSecondary} font-bold`}`}
           >
             {label}
+            <span className="sr-only" aria-hidden="true" data-ai-field-id={field}> [Key: {field}]</span>
           </span>
           {labelSuffix}
         </div>
@@ -131,6 +137,8 @@ function EditableField({
       {isEditing ? (
         multiline ? (
           <textarea
+            id={`char-input-${field}`}
+            data-field-key={field}
             value={localValue}
             onChange={(e) => setLocalValue(e.target.value)}
             onBlur={() => {
@@ -144,6 +152,8 @@ function EditableField({
           />
         ) : (
           <input
+            id={`char-input-${field}`}
+            data-field-key={field}
             type="text"
             value={localValue}
             onChange={(e) => setLocalValue(e.target.value)}
@@ -159,6 +169,8 @@ function EditableField({
         )
       ) : (
         <div
+          id={`char-display-${field}`}
+          data-field-key={field}
           className={`p-3 rounded-xl border text-sm transition-all ${
             isDark
               ? "bg-white/5 border-white/5 text-white/90"

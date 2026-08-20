@@ -999,6 +999,38 @@ const applyMcUpdates = (mcData: any, mcUpdatesSource: any) => {
     hasUpdate = true;
   }
 
+  // === DỌN DẸP CÁC TRƯỜNG ẢO DO AI BỊA RA ===
+  const storeGameData = useStore.getState().gameData;
+  const isCustomModeLocal = storeGameData?.mcTemplateMode === "custom";
+  const customFields = storeGameData?.customMcFields || [];
+  const defaultFields = [
+      "fullname", "gender", "age", "dob", "height", "weight", "measurements", "rank", "occupation",
+      "appearance", "appearancelite", "distinguishingfeatures", 
+      "personality", "personalitycore", "philosophy", "goal", 
+      "innersecret", "impression", "background", "relationships", 
+      "powers", "skills", "inventory", "preferences", "needs", "needssfw", "needsnsfw",
+      "likesdislikesfears", "likesdislikesfearsnsfw", "loveviews", "experience", 
+      "nsfwpersonality", "nsfwreactions", "literarydescription", "titles",
+      "id", "name", "role", "avatar", "objectives", "partylist", "customdata"
+  ];
+  const directFieldsLowerForCleanup = ["location", "currentlocation", "status", "statusdata", "partylist", "objectives"];
+
+  Object.keys(cMc).forEach(key => {
+      const keyLower = key.trim().toLowerCase();
+      if (directFieldsLowerForCleanup.includes(keyLower)) return;
+
+      let isAllowed = false;
+      if (isCustomModeLocal) {
+         isAllowed = customFields.some((f: any) => f.id.toLowerCase() === keyLower) || ["id", "name", "role", "avatar", "objectives", "partylist", "customdata"].includes(keyLower);
+      } else {
+         isAllowed = defaultFields.includes(keyLower);
+      }
+
+      if (!isAllowed) {
+         delete cMc[key];
+      }
+  });
+
   // === CẬP NHẬT TRỰC TIẾP CÁC TRƯỜNG THỰC TẾ GAMEPLAY ===
   const directFieldsLower = ["location", "currentlocation", "status", "partylist", "objectives"];
   Object.keys(cMc).forEach((key) => {
@@ -1356,6 +1388,38 @@ const applyNpcUpdates = (npcs: any[], npcUpdatesSource: any) => {
         delete cNpc[npcStatusDataKey];
         hasUpdate = true;
       }
+
+      // === DỌN DẸP CÁC TRƯỜNG ẢO DO AI BỊA RA ===
+      const storeGameData = useStore.getState().gameData;
+      const isCustomModeLocal = storeGameData?.npcTemplateMode === "custom";
+      const customFields = storeGameData?.customNpcFields || [];
+      const defaultFields = [
+          "fullname", "gender", "age", "dob", "height", "weight", "measurements", "rank", "occupation",
+          "appearance", "appearancelite", "distinguishingfeatures", 
+          "personality", "personalitycore", "philosophy", "goal", 
+          "innersecret", "impression", "background", "relationships", 
+          "powers", "skills", "inventory", "preferences", "needs", "needssfw", "needsnsfw",
+          "likesdislikesfears", "likesdislikesfearsnsfw", "loveviews", "experience", 
+          "nsfwpersonality", "nsfwreactions", "literarydescription", "titles",
+          "id", "name", "role", "avatar", "objectives", "partylist", "customdata"
+      ];
+      const directFieldsLowerForCleanup = ["location", "currentlocation", "status", "statusdata"];
+
+      Object.keys(cNpc).forEach(key => {
+          const keyLower = key.trim().toLowerCase();
+          if (directFieldsLowerForCleanup.includes(keyLower)) return;
+
+          let isAllowed = false;
+          if (isCustomModeLocal) {
+             isAllowed = customFields.some((f: any) => f.id.toLowerCase() === keyLower) || ["id", "name", "role", "avatar", "objectives", "partylist", "customdata"].includes(keyLower);
+          } else {
+             isAllowed = defaultFields.includes(keyLower);
+          }
+
+          if (!isAllowed) {
+             delete cNpc[key];
+          }
+      });
 
       // === CẬP NHẬT TRỰC TIẾP CÁC TRƯỜNG THỰC TẾ GAMEPLAY ===
       const directFieldsLower = ["location", "currentlocation", "status"];
@@ -2404,9 +2468,11 @@ export default function Gameplay() {
   const [editingTurnId, setEditingTurnId] = useState<string | null>(null);
   const editingContentRef = useRef<string>("");
   const playerRulesRef = useRef<string>(playerRules || "");
+  const [localPlayerRules, setLocalPlayerRules] = useState<string>(playerRules || "");
 
   useEffect(() => {
     playerRulesRef.current = playerRules || "";
+    setLocalPlayerRules(playerRules || "");
   }, [playerRules]);
 
   const closeRulesModal = () => {
@@ -4026,10 +4092,35 @@ ${dramaPromptText ? `- GỢI Ý/YÊU CẦU KỊCH TÍNH TỪ NGƯỜI CHƠI (AI 
 
 
 
-  const hasAnyNpcUpdate = !autoUpdateNpc && !!gameData?.npcs?.some(
-    (npc: any) => npc.pendingUpdates && Object.keys(npc.pendingUpdates).some(k => !['location', 'currentlocation', 'status', 'statusdata'].includes(k.trim().toLowerCase()))
+  // === HELPER CẬP NHẬT TRẠNG THÁI (ĐÈN XANH) ===
+  const defaultFieldsForCheck = [
+      "fullname", "gender", "age", "dob", "height", "weight", "measurements", "rank", "occupation",
+      "appearance", "appearancelite", "distinguishingfeatures", 
+      "personality", "personalitycore", "philosophy", "goal", 
+      "innersecret", "impression", "background", "relationships", 
+      "powers", "skills", "inventory", "preferences", "needs", "needssfw", "needsnsfw",
+      "likesdislikesfears", "likesdislikesfearsnsfw", "loveviews", "experience", 
+      "nsfwpersonality", "nsfwreactions", "literarydescription", "titles",
+      "id", "name", "role", "avatar", "objectives", "partylist", "customdata"
+  ];
+
+  const hasPendingUpdatesForChar = (char: any, templateMode: string, customFields: any[]) => {
+      if (!char?.pendingUpdates) return false;
+      return Object.keys(char.pendingUpdates).some(k => {
+          const keyLower = k.trim().toLowerCase();
+          if (['location', 'currentlocation', 'status', 'statusdata'].includes(keyLower)) return false;
+          if (templateMode === "custom") {
+             return (customFields || []).some((f: any) => f.id.toLowerCase() === keyLower) || ["id", "name", "role", "avatar", "objectives", "partylist", "customdata"].includes(keyLower);
+          }
+          return defaultFieldsForCheck.includes(keyLower);
+      });
+  };
+
+  const hasAnyNpcUpdate = !autoUpdateNpc && !!gameData?.npcs?.some((npc: any) => 
+      hasPendingUpdatesForChar(npc, gameData?.npcTemplateMode || "default", gameData?.customNpcFields || [])
   );
-  const hasMcUpdate = !autoUpdateMc && !!(gameData?.mcData?.pendingUpdates && Object.keys(gameData.mcData.pendingUpdates).some(k => !['location', 'currentlocation', 'status', 'statusdata'].includes(k.trim().toLowerCase())));
+
+  const hasMcUpdate = !autoUpdateMc && hasPendingUpdatesForChar(gameData?.mcData, gameData?.mcTemplateMode || "default", gameData?.customMcFields || []);
   const hasCodexUpdate = !autoUpdateCodex && !!(gameData?.codexPendingUpdates && (
     (gameData.codexPendingUpdates.worldData && Object.keys(gameData.codexPendingUpdates.worldData).length > 0) ||
     (gameData.codexPendingUpdates.worldDetails && (
@@ -4081,6 +4172,9 @@ ${dramaPromptText ? `- GỢI Ý/YÊU CẦU KỊCH TÍNH TỪ NGƯỜI CHƠI (AI 
           >
             <button
               onClick={() => {
+                if (playerRulesRef.current !== playerRules) {
+                  setPlayerRules(playerRulesRef.current);
+                }
                 setTimeout(async () => {
                   await saveCurrentGame();
                   toast.success("Đã lưu tiến trình!");
@@ -4115,8 +4209,7 @@ ${dramaPromptText ? `- GỢI Ý/YÊU CẦU KỊCH TÍNH TỪ NGƯỜI CHƠI (AI 
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-xs font-bold tracking-wider relative ${getHeaderBtnClass("emerald")}`}
             >
               <User size={14} /> <span>MC</span>
-              {!autoUpdateMc && gameData.mcData?.pendingUpdates &&
-                Object.keys(gameData.mcData.pendingUpdates).some(k => !['location', 'currentlocation', 'status', 'statusdata'].includes(k.trim().toLowerCase())) && (
+              {hasMcUpdate && (
                   <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500 border border-white dark:border-slate-900"></span>
@@ -4393,8 +4486,7 @@ ${dramaPromptText ? `- GỢI Ý/YÊU CẦU KỊCH TÍNH TỪ NGƯỜI CHƠI (AI 
                           }}
                           className={`relative p-4 rounded-2xl border transition-all cursor-pointer ${bgClass} ${borderClass} ${opacityClass}`}
                         >
-                          {!autoUpdateNpc && npc.pendingUpdates &&
-                            Object.keys(npc.pendingUpdates).some(k => !['location', 'currentlocation', 'status', 'statusdata'].includes(k.trim().toLowerCase())) && (
+                          {!autoUpdateNpc && hasPendingUpdatesForChar(npc, gameData?.npcTemplateMode || "default", gameData?.customNpcFields || []) && (
                               <div
                                 className="absolute -top-1 -right-1 flex h-4 w-4 z-10"
                                 title="Có cập nhật NPC cần xác nhận"
@@ -5134,6 +5226,9 @@ ${dramaPromptText ? `- GỢI Ý/YÊU CẦU KỊCH TÍNH TỪ NGƯỜI CHƠI (AI 
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     onClick={() => {
+                      if (playerRulesRef.current !== playerRules) {
+                        setPlayerRules(playerRulesRef.current);
+                      }
                       setTimeout(async () => {
                         await saveCurrentGame();
                         toast.success("Đã lưu tiến trình!");
@@ -5523,8 +5618,11 @@ ${dramaPromptText ? `- GỢI Ý/YÊU CẦU KỊCH TÍNH TỪ NGƯỜI CHƠI (AI 
                 <textarea
                   className="w-full flex-1 min-h-[300px] theme-input border rounded-xl p-4 focus:outline-none focus:border-indigo-500/50 resize-none font-mono text-sm leading-relaxed"
                   placeholder={`Mô tả các quy tắc theo dạng gạch đầu dòng:\n- Không được sử dụng phép thuật trong 5 lượt tới.\n- AI phải viết dài hơn bình thường.\n- ...`}
-                  defaultValue={playerRules}
-                  onChange={(e) => { playerRulesRef.current = e.target.value; }}
+                  value={localPlayerRules}
+                  onChange={(e) => {
+                    setLocalPlayerRules(e.target.value);
+                    playerRulesRef.current = e.target.value;
+                  }}
                 />
               </div>
             </div>

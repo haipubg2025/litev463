@@ -1724,6 +1724,7 @@ LƯU Ý QUAN TRỌNG: Hãy tạo ra ĐỦ số lượng Location như được y
 
   const handleSaveData = () => {
     const dataToSave = {
+      playerRules,
       initialIdea,
       developedIdea,
       worldData,

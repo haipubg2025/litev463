@@ -765,11 +765,25 @@ export default function NpcUpdateModal({ npc, npcIndex, onClose, onApply }: NpcU
                                !(typeof origVal === 'string' || typeof pending[key] === 'string');
               
               return (
-                <div key={key} className={`flex flex-col md:flex-row gap-6 ${viewMode !== 'both' ? 'md:flex-col' : ''}`}>
+                <div 
+                  key={key} 
+                  id={`update-field-group-${key}`}
+                  data-field-key={key}
+                  data-ai-field-name={key}
+                  className={`flex flex-col md:flex-row gap-6 ${viewMode !== 'both' ? 'md:flex-col' : ''}`}
+                >
                   {/* Cột Gốc */}
                   {(viewMode === 'original' || viewMode === 'both') && (
-                  <div className={`flex-1 p-5 rounded-2xl border shadow-sm ${isDark ? 'bg-black/20 border-white/10' : `border-black/10 ${theme.sidebarClass}`} flex flex-col`}>
-                    <span className={`block text-xs font-black uppercase tracking-widest mb-4 ${isDark ? 'text-blue-400/80' : 'text-blue-600/80'}`}>BẢN GỐC: {getFieldLabel(key)}</span>
+                  <div 
+                    id={`update-original-col-${key}`}
+                    data-field-column="original"
+                    data-field-key={key}
+                    className={`flex-1 p-5 rounded-2xl border shadow-sm ${isDark ? 'bg-black/20 border-white/10' : `border-black/10 ${theme.sidebarClass}`} flex flex-col`}
+                  >
+                    <span className={`block text-xs font-black uppercase tracking-widest mb-4 ${isDark ? 'text-blue-400/80' : 'text-blue-600/80'}`}>
+                      BẢN GỐC: {getFieldLabel(key)}
+                      <span className="sr-only" aria-hidden="true" data-ai-key={key}> [Key: {key}]</span>
+                    </span>
                     <div className={`flex-1`}>
                       {isArray ? (
                         <ArrayEditor items={origVal || []} compareItems={pending[key] || []} isDark={isDark} readonly showOnlyChanges={true} />
@@ -788,9 +802,17 @@ export default function NpcUpdateModal({ npc, npcIndex, onClose, onApply }: NpcU
 
                   {/* Cột Cập Nhật */}
                   {(viewMode === 'updated' || viewMode === 'both') && (
-                  <div className={`flex-1 p-5 rounded-2xl border relative focus-within:ring-2 ring-green-500/50 shadow-sm ${isDark ? 'bg-green-900/10 border-green-500/30' : 'bg-green-50 border-green-200'} flex flex-col`}>
+                  <div 
+                    id={`update-pending-col-${key}`}
+                    data-field-column="updated"
+                    data-field-key={key}
+                    className={`flex-1 p-5 rounded-2xl border relative focus-within:ring-2 ring-green-500/50 shadow-sm ${isDark ? 'bg-green-900/10 border-green-500/30' : 'bg-green-50 border-green-200'} flex flex-col`}
+                  >
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
-                      <span className={`text-xs font-black uppercase tracking-widest ${isDark ? 'text-green-400' : 'text-green-600'}`}>CẬP NHẬT: {getFieldLabel(key)}</span>
+                      <span className={`text-xs font-black uppercase tracking-widest ${isDark ? 'text-green-400' : 'text-green-600'}`}>
+                        CẬP NHẬT: {getFieldLabel(key)}
+                        <span className="sr-only" aria-hidden="true" data-ai-key={key}> [Key: {key}]</span>
+                      </span>
                       <div className="flex flex-wrap items-center gap-2">
                         {typeof npc[key] === 'string' && typeof pending[key] === 'string' && (
                           <button 

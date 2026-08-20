@@ -607,6 +607,7 @@ const customIdbStorage: PersistStorage<GameState> = {
               phoneAppControl: state.phoneAppControl,
               isVNDialogueModeEnabled: state.isVNDialogueModeEnabled,
               isFanfictionModeEnabled: state.isFanfictionModeEnabled,
+              actionSuggestionsConfig: state.actionSuggestionsConfig,
               showTitles: state.showTitles,
             };
         
@@ -1292,11 +1293,19 @@ export const useStore = create<GameState>()(
             draft.saves[existingIdx].name = saveName;
             draft.saves[existingIdx].updatedAt = now;
             draft.saves[existingIdx].messages = draft.messages;
+            if (draft.gameData) {
+              draft.gameData.playerRules = draft.playerRules;
+              draft.gameData.actionSuggestionsConfig = draft.actionSuggestionsConfig;
+            }
             draft.saves[existingIdx].gameData = draft.gameData;
             draft.saves[existingIdx].ragMemories = ragMemories;
             draft.saves[existingIdx].playerRules = draft.playerRules;
             draft.saves[existingIdx].actionSuggestionsConfig = draft.actionSuggestionsConfig;
           } else {
+            if (draft.gameData) {
+              draft.gameData.playerRules = draft.playerRules;
+              draft.gameData.actionSuggestionsConfig = draft.actionSuggestionsConfig;
+            }
             draft.saves.push({
               id: now.toString(),
               name: saveName,
@@ -1342,11 +1351,19 @@ export const useStore = create<GameState>()(
             draft.saves[existingIdx].name = saveName;
             draft.saves[existingIdx].updatedAt = now;
             draft.saves[existingIdx].messages = draft.messages;
+            if (draft.gameData) {
+              draft.gameData.playerRules = draft.playerRules;
+              draft.gameData.actionSuggestionsConfig = draft.actionSuggestionsConfig;
+            }
             draft.saves[existingIdx].gameData = draft.gameData;
             draft.saves[existingIdx].ragMemories = ragMemories;
             draft.saves[existingIdx].playerRules = draft.playerRules;
             draft.saves[existingIdx].actionSuggestionsConfig = draft.actionSuggestionsConfig;
           } else {
+            if (draft.gameData) {
+              draft.gameData.playerRules = draft.playerRules;
+              draft.gameData.actionSuggestionsConfig = draft.actionSuggestionsConfig;
+            }
             draft.saves.push({
               id: autoSaveId,
               name: saveName,
@@ -1464,6 +1481,12 @@ export const useStore = create<GameState>()(
             validSaves.forEach((newSave) => {
               if (newSave.gameData) {
                 newSave.gameData = sanitizeGameData(newSave.gameData);
+              }
+              if (newSave.playerRules === undefined || newSave.playerRules === null) {
+                newSave.playerRules = newSave.gameData?.playerRules || newSave.gameData?.worldCreation?.playerRules || "";
+              }
+              if (newSave.actionSuggestionsConfig === undefined || newSave.actionSuggestionsConfig === null) {
+                newSave.actionSuggestionsConfig = newSave.gameData?.actionSuggestionsConfig || "";
               }
               // Khi tải từ máy lên, nếu tên lưu y hệt thì lưu đè
               const existingIdx = state.saves.findIndex(
@@ -1620,6 +1643,7 @@ export const useStore = create<GameState>()(
         isStrictEndEnabled: state.isStrictEndEnabled,
         isSuggestionsLocked: state.isSuggestionsLocked,
         isHardModeEnabled: state.isHardModeEnabled,
+        actionSuggestionsConfig: state.actionSuggestionsConfig,
         phoneAppControl: state.phoneAppControl,
         isVNDialogueModeEnabled: state.isVNDialogueModeEnabled,
         isFanfictionModeEnabled: state.isFanfictionModeEnabled,
