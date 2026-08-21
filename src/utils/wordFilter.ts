@@ -168,6 +168,7 @@ export function filterSensitiveWords(text: string, worldTags: string[] = []): st
     replaceCase(/đại\s+não/gi, "tâm trí");
     sanitized = sanitized.replace(/(cọ\s+xát|va\s+chạm|đâm|nhấp|thúc|tiến\s+vào)\s+chí\s+mạng/gi, "$1 mãnh liệt");
     replaceCase(/hoang\s+tàn/gi, "hoang dại");
+    replaceCase(/sưng\s+cứng/gi, "căng cứng");
     replaceCase(/sưng\s+tấy/gi, "nhạy cảm");
     replaceCase(/sưng\s+mọng/gi, "căng mọng");
     replaceCase(/sưng\s+vù/gi, "căng tròn");

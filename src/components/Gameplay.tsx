@@ -88,7 +88,7 @@ const isBuiltInField = (key: string): boolean => {
     "id", "name", "role", "avatar", "appearance", "appearanceLite", 
     "distinguishingFeatures", "personality", "personalityCore", "philosophy", 
     "goal", "innerSecret", "impression", "background", "relationships", 
-    "powers", "skills", "inventory", "location", "status", "statusdata", 
+    "powers", "skills", "inventory", "location", "status", "statusdata", "fashion", 
     "preferences", "needs", "loveviews", "experience", "nsfwpersonality", 
     "nsfwreactions", "literarydescription", "titles"
   ];
@@ -1008,12 +1008,12 @@ const applyMcUpdates = (mcData: any, mcUpdatesSource: any) => {
       "appearance", "appearancelite", "distinguishingfeatures", 
       "personality", "personalitycore", "philosophy", "goal", 
       "innersecret", "impression", "background", "relationships", 
-      "powers", "skills", "inventory", "preferences", "needs", "needssfw", "needsnsfw",
+      "powers", "skills", "inventory", "fashion", "preferences", "needs", "needssfw", "needsnsfw",
       "likesdislikesfears", "likesdislikesfearsnsfw", "loveviews", "experience", 
       "nsfwpersonality", "nsfwreactions", "literarydescription", "titles",
       "id", "name", "role", "avatar", "objectives", "partylist", "customdata"
   ];
-  const directFieldsLowerForCleanup = ["location", "currentlocation", "status", "statusdata", "partylist", "objectives"];
+  const directFieldsLowerForCleanup = ["location", "currentlocation", "status", "statusdata", "fashion", "partylist", "objectives"];
 
   Object.keys(cMc).forEach(key => {
       const keyLower = key.trim().toLowerCase();
@@ -1021,7 +1021,7 @@ const applyMcUpdates = (mcData: any, mcUpdatesSource: any) => {
 
       let isAllowed = false;
       if (isCustomModeLocal) {
-         isAllowed = customFields.some((f: any) => f.id.toLowerCase() === keyLower) || ["id", "name", "role", "avatar", "objectives", "partylist", "customdata"].includes(keyLower);
+         isAllowed = customFields.some((f: any) => f.id.toLowerCase() === keyLower) || ["id", "name", "role", "avatar", "objectives", "partylist", "inventory", "customdata"].includes(keyLower);
       } else {
          isAllowed = defaultFields.includes(keyLower);
       }
@@ -1032,7 +1032,7 @@ const applyMcUpdates = (mcData: any, mcUpdatesSource: any) => {
   });
 
   // === CẬP NHẬT TRỰC TIẾP CÁC TRƯỜNG THỰC TẾ GAMEPLAY ===
-  const directFieldsLower = ["location", "currentlocation", "status", "partylist", "objectives"];
+  const directFieldsLower = ["location", "currentlocation", "status", "fashion", "partylist", "objectives"];
   Object.keys(cMc).forEach((key) => {
     if (directFieldsLower.includes(key.trim().toLowerCase())) {
       // Map correctly to camelCase
@@ -1040,6 +1040,7 @@ const applyMcUpdates = (mcData: any, mcUpdatesSource: any) => {
       let actualKey = key.toLowerCase();
       if (lowerKey === "partylist") actualKey = "partyList";
       if (lowerKey === "objectives") actualKey = "objectives";
+      if (lowerKey === "fashion") actualKey = "fashion";
       
       updatedMcData[actualKey] = cMc[key];
       if (lowerKey === "currentlocation") {
@@ -1050,7 +1051,7 @@ const applyMcUpdates = (mcData: any, mcUpdatesSource: any) => {
     }
   });
 
-  // Dọn dẹp cả pendingUpdates cũ của MC nếu có chứa statusData, status, location, currentLocation, partyList, objectives
+  // Dọn dẹp cả pendingUpdates cũ của MC nếu có chứa statusData, status, location, currentLocation, fashion, partyList, objectives
   if (updatedMcData.pendingUpdates) {
     let pendingChanged = false;
     const oldPending = { ...updatedMcData.pendingUpdates };
@@ -1063,7 +1064,7 @@ const applyMcUpdates = (mcData: any, mcUpdatesSource: any) => {
       hasUpdate = true;
     }
 
-    const oldDirectFieldsLower = ["location", "currentlocation", "status", "partylist", "objectives"];
+    const oldDirectFieldsLower = ["location", "currentlocation", "status", "fashion", "partylist", "objectives"];
     Object.keys(oldPending).forEach((key) => {
       if (oldDirectFieldsLower.includes(key.trim().toLowerCase())) {
         const lowerKey = key.trim().toLowerCase();
@@ -1398,12 +1399,12 @@ const applyNpcUpdates = (npcs: any[], npcUpdatesSource: any) => {
           "appearance", "appearancelite", "distinguishingfeatures", 
           "personality", "personalitycore", "philosophy", "goal", 
           "innersecret", "impression", "background", "relationships", 
-          "powers", "skills", "inventory", "preferences", "needs", "needssfw", "needsnsfw",
+          "powers", "skills", "inventory", "fashion", "preferences", "needs", "needssfw", "needsnsfw",
           "likesdislikesfears", "likesdislikesfearsnsfw", "loveviews", "experience", 
           "nsfwpersonality", "nsfwreactions", "literarydescription", "titles",
           "id", "name", "role", "avatar", "objectives", "partylist", "customdata"
       ];
-      const directFieldsLowerForCleanup = ["location", "currentlocation", "status", "statusdata"];
+      const directFieldsLowerForCleanup = ["location", "currentlocation", "status", "statusdata", "fashion"];
 
       Object.keys(cNpc).forEach(key => {
           const keyLower = key.trim().toLowerCase();
@@ -1422,7 +1423,7 @@ const applyNpcUpdates = (npcs: any[], npcUpdatesSource: any) => {
       });
 
       // === CẬP NHẬT TRỰC TIẾP CÁC TRƯỜNG THỰC TẾ GAMEPLAY ===
-      const directFieldsLower = ["location", "currentlocation", "status"];
+      const directFieldsLower = ["location", "currentlocation", "status", "fashion"];
       Object.keys(cNpc).forEach((key) => {
         if (directFieldsLower.includes(key.trim().toLowerCase())) {
           updatedNpcs[idx][key.toLowerCase()] = cNpc[key];
@@ -1434,7 +1435,7 @@ const applyNpcUpdates = (npcs: any[], npcUpdatesSource: any) => {
         }
       });
 
-      // Dọn dẹp cả pendingUpdates cũ của NPC nếu có chứa statusData, status, location, currentLocation
+      // Dọn dẹp cả pendingUpdates cũ của NPC nếu có chứa statusData, status, location, currentLocation, fashion
       if (updatedNpcs[idx].pendingUpdates) {
         let pendingChanged = false;
         const oldPending = { ...updatedNpcs[idx].pendingUpdates };
@@ -1447,7 +1448,7 @@ const applyNpcUpdates = (npcs: any[], npcUpdatesSource: any) => {
           hasUpdate = true;
         }
 
-        const oldDirectFieldsLower = ["location", "currentlocation", "status"];
+        const oldDirectFieldsLower = ["location", "currentlocation", "status", "fashion"];
         Object.keys(oldPending).forEach((key) => {
           if (oldDirectFieldsLower.includes(key.trim().toLowerCase())) {
             updatedNpcs[idx][key.toLowerCase()] = oldPending[key];
@@ -4123,7 +4124,7 @@ ${dramaPromptText ? `- GỢI Ý/YÊU CẦU KỊCH TÍNH TỪ NGƯỜI CHƠI (AI 
           const keyLower = k.trim().toLowerCase();
           if (['location', 'currentlocation', 'status', 'statusdata'].includes(keyLower)) return false;
           if (templateMode === "custom") {
-             return (customFields || []).some((f: any) => f.id.toLowerCase() === keyLower) || ["id", "name", "role", "avatar", "objectives", "partylist", "customdata"].includes(keyLower);
+             return (customFields || []).some((f: any) => f.id.toLowerCase() === keyLower) || ["id", "name", "role", "avatar", "objectives", "partylist", "inventory", "customdata"].includes(keyLower);
           }
           return defaultFieldsForCheck.includes(keyLower);
       });

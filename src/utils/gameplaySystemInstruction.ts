@@ -115,6 +115,7 @@ ${fieldsList}
         "avatar": "Đường dẫn ảnh đại diện hoặc để trống (VD: '')",
         "location": "Vị trí bắt đầu của NPC",
         "statusData": { "mood": [{ "name": "Bình thường", "description": "Cảm xúc ổn định", "type": "permanent", "solvable": "solvable" }], "psychological": [], "physiological": [], "health": [], "condition": [] },
+        "fashion": "Trạng thái trang phục/ăn mặc ban đầu của NPC khi xuất hiện (VD: 'đồng phục học sinh', 'bộ đồ vest đen', 'áo sơ mi trắng', v.v.)",
         "TẤT_CẢ_CÁC_TRƯỜNG_CUSTOM_CỦA_NPC_KHỞI_TẠO": "BẮT BUỘC khai báo đầy đủ tất cả các ID trường Custom của NPC đã được định nghĩa ở trên làm các key tương ứng trong object này. Tuyệt đối KHÔNG ĐƯỢC PHÉP sử dụng bất kỳ trường mặc định nào của NPC!"`;
   } else {
     npcTemplateInstruction = `
@@ -168,7 +169,7 @@ ${fieldsList}
         "preferences": { "sfw": "Sở thích, ghét, nỗi sợ ở chế độ bình thường", "nsfw": "Sở thích, ghét, nỗi sợ ở chế độ NSFW" },
         "needs": { "sfw": "Nhu cầu cơ bản/đời thường và Nhu cầu tình cảm hoặc sinh tồn/quyền lực", "nsfw": "Nhu cầu tình dục và các khao khát/sở thích cụ thể" },
         "literaryDescription": "Chân dung nhân vật chi tiết, rõ ràng và sinh động (Tuyệt đối không dự đoán tương lai, chỉ miêu tả tại HIỆN TẠI). BẮT BUỘC CÓ THÊM 1 ĐOẠN ĐỂ KỂ VỀ CÁC VẬT PHẨM, TÀI SẢN CỦA NPC ĐÓ.",
-        "goal": "Mục tiêu hiện tại/Khao khát", "statusData": { "mood": [{ "name": "Bình thường", "description": "Cảm xúc ổn định", "type": "permanent", "solvable": "solvable" }], "psychological": [], "physiological": [], "health": [], "condition": [] }`;
+        "goal": "Mục tiêu hiện tại/Khao khát", "fashion": "Trạng thái trang phục/ăn mặc ban đầu của NPC khi xuất hiện (VD: 'đồng phục học sinh', 'bộ đồ vest đen', 'áo sơ mi trắng', v.v.)", "statusData": { "mood": [{ "name": "Bình thường", "description": "Cảm xúc ổn định", "type": "permanent", "solvable": "solvable" }], "psychological": [], "physiological": [], "health": [], "condition": [] }`;
   }
 
   let phoneControlRules = "";
@@ -2388,12 +2389,108 @@ ${rulesBlock}
           - "Ngân khố": Phù hợp Cổ đại, cung đấu, võ hiệp. CẤM dùng trong hiện đại, phương Tây (thay bằng: Ngân hàng, Két sắt, Kho bạc, Kho báu).
           - "Hàn" / "Kháng hàn": Phù hợp Tiên hiệp, võ hiệp (thuộc tính phép thuật) hoặc Võng du/Hệ thống (chỉ số). CẤM dùng trong sinh hoạt đời thường (thay bằng: lạnh, chịu lạnh, chống rét).
           - "Sưng", "Sưng tấy": Tuyệt đối CHỈ được phép sử dụng khi miêu tả chấn thương vật lý, va đập thực tế. TUYỆT ĐỐI CẤM sử dụng trong bối cảnh lãng mạn, đụng chạm cơ thể thông thường hoặc miêu tả phản ứng sinh lý nhạy cảm (thay bằng: căng đầy, nóng hổi, nhạy cảm, mềm mại).
-        * HƯỚNG DẪN CHI TIẾT VỀ TÌNH YÊU NAM NỮ (TỐI QUAN TRỌNG):
-          - Tình yêu KHÔNG PHẢI là cuộc chiến tranh giành quyền lực, KHÔNG PHẢI phân chia "thống trị" - "thần phục" (trừ khi roleplay BDSM). AI tuyệt đối không tự ý biến quan hệ lãng mạn thành sự nô dịch hóa tinh thần.
-          - Nhân vật nữ khi yêu có thể yếu mềm, e ấp hoặc dựa dẫm, nhưng đó là sự tin tưởng và thả lỏng cảm xúc, KHÔNG PHẢI "đầu hàng", "đánh mất bản ngã", hay "tôn thờ như tín ngưỡng".
-          - CẤM lạm dụng các từ mô típ chiếm hữu lố bịch: Đầu hàng, thần phục, quy phục, tín ngưỡng, thần minh, triệt để từ bỏ, bị chinh phục hoàn toàn, nô lệ của tình yêu.
-          - BẮT BUỘC NÊN DÙNG: Rung động sâu sắc, trái tim mềm nhũn, an tâm dựa vào, đê mê, chìm đắm trong đôi mắt, cảm thấy được che chở, trao trọn niềm tin, vòng tay vững chãi, hòa quyện nhịp đập, sự gắn kết vô hình.
-          - Tập trung vào các giác quan chân thực: Hơi ấm từ bàn tay, nhịp thở dồn dập, mùi hương nhẹ nhàng, ánh nhìn đắm đuối, và sự quan tâm từ những chi tiết nhỏ nhặt.
+
+        * TỪ ĐIỂN HƯỚNG DẪN THAY THẾ TỪ NGỮ CHUẨN XÁC & ĐA DẠNG (LEXICON OF DIVERSE ALTERNATIVES - THAY THẾ TỪ TẬN GỐC TƯ DUY AI):
+          AI BẮT BUỘC phải chủ động sử dụng các từ ngữ phong phú, đa dạng ngữ cảnh dưới đây thay vì dùng các từ sáo rỗng, rập khuôn hay phụ thuộc vào bộ lọc mã nguồn:
+          1. Từ miêu tả mùi hương / Cảm giác / Âm thanh sáo rỗng:
+             - ❌ "ngai ngái", "mùi ngai ngái": -> ✅ Thay bằng đa dạng các từ: nồng ướt, ẩm ướt, mặn mòi, ấm nồng, ngai ngát tự nhiên, thơm nồng, quyến rũ, đậm đà, mùi hương da thịt đặc trưng.
+             - ❌ "xạ hương", "mùi xạ hương": -> ✅ Thay bằng: hương thơm nồng nàn, mùi hương tự nhiên quyến rũ, ngát hương, thoang thoảng dịu nhẹ, hương hoa cỏ, ấm áp, ngất ngây.
+             - ❌ "thanh thúy" (lạm dụng sáo rỗng): -> ✅ Thay bằng: trong trẻo, giòn giã, vang vọng, lảnh lót, dứt khoát, thanh thoát, êm tai.
+             - ❌ "hai háng" (thô ráp, sượng gạo): -> ✅ Thay bằng: háng, đùi non, hai bên đùi, nơi giao nhau giữa hai đùi, khe đùi, hông.
+          2. Từ Hán-Việt lạc quẻ trong bối cảnh Hiện đại / Phương Tây (Fantasy / Sci-fi / Isekai / Đời thường):
+             - ❌ "tửu quán", "tửu lâu": -> ✅ Thay bằng: quán rượu, quán bar, tửu điếm, lữ quán, tiệm ăn, quầy bar.
+             - ❌ "khách điếm": -> ✅ Thay bằng: nhà trọ, quán trọ, khách sạn, lữ quán, nơi nghỉ chân.
+             - ❌ "canh giờ": -> ✅ Thay bằng: giờ, tiếng đồng hồ, khoảng thời gian, khắc, chốc lát.
+             - ❌ "nam tử hán": -> ✅ Thay bằng: chàng trai, người đàn ông, đấng nam nhi, trượng phu, dũng sĩ, gã thanh niên.
+             - ❌ "đan điền", "trong đan điền": -> ✅ Thay bằng: trong cơ thể, trong ổ bụng, vùng bụng dưới, sâu trong lồng ngực, tâm điểm ma lực, lõi năng lượng.
+             - ❌ "giáng lâm": -> ✅ Thay bằng: xuất hiện, đặt chân tới, bước ra, hiện diện, ập xuống, bao trùm.
+             - ❌ "dương khí", "âm khí": -> ✅ Thay bằng: sức sống, sinh khí, dương lực, hơi ấm / năng lượng hắc ám, tử khí, khí lạnh, tà khí.
+          3. Ẩn dụ cờ bàn & Mưu lược rập khuôn (Anti-Chess clichés):
+             - ❌ "bàn cờ", "ván cờ": -> ✅ Thay bằng: thế cuộc, thế trận, cục diện, trò chơi quyền lực, cuộc đối đầu, vòng xoáy sự kiện.
+             - ❌ "quân cờ": -> ✅ Thay bằng: nhân tố, mắt xích, con bài, người đóng vai trò then chốt, quân bài chiến lược, kẻ bị giật dây.
+             - ❌ "nước cờ": -> ✅ Thay bằng: bước đi, tính toán, kế sách, bước tiến, hành động, quyết định tiếp theo.
+             - ❌ "sóng vai": -> ✅ Thay bằng: sánh vai, sánh bước, kề vai, bước song hành, song hành cùng nhau.
+          4. Từ miêu tả vóc dáng & Vẻ đẹp hình thể (Đa dạng hóa phong phú):
+             - ❌ "phồn thực" (Cực kỳ sáo rỗng và phản cảm khi tả phụ nữ): -> ✅ Thay bằng đa dạng: gợi cảm, quyến rũ, bốc lửa, đầy đặn, nảy nở, căng mọng, nóng bỏng, đẫy đà, đường cong tuyệt mỹ, ngực nở mông cong, tràn đầy sức sống.
+             - ❌ "hoa huyệt", "tư mật", "ống âm đạo", "cổ tử cung" (trong miêu tả chung): -> ✅ Thay bằng: âm đạo, lồn, vùng nhạy cảm, khe rãnh ấm mềm, nơi sâu kín nhất, cửa mình, tử cung.
+             - ❌ "tộc tinh linh", "người tinh linh": -> ✅ Thay bằng: tộc Elf, người Elf, giống loài Elf.
+          5. Bệnh lạm dụng từ "Sinh lý" / Y khoa khô khan:
+             - ❌ "nước mắt sinh lý", "giọt lệ sinh lý": -> ✅ Thay bằng: nước mắt ứa ra vì nhạy cảm, giọt lệ ngấn khóe mi, ngấn lệ long lanh, nước mắt trào ra vì xúc cảm.
+             - ❌ "dịch nhầy sinh lý": -> ✅ Thay bằng: dịch tiết, dâm dịch, nước dâm, chất nhờn ấm áp, dịch nhầy trong suốt.
+             - ❌ "phản ứng sinh lý", "nhu cầu sinh lý", "khoái cảm sinh lý", "bản năng sinh lý", "đòi hỏi sinh lý", "thỏa mãn sinh lý": -> ✅ Thay bằng: phản ứng tự nhiên của cơ thể, cảm giác rạo rực, sự khao khát tự nhiên, khoái cảm mãnh liệt, nhu cầu gần gũi, thỏa mãn thể xác và tâm hồn.
+             - ❌ "võng mạc", "đồng tử" (khi tả cái nhìn thông thường): -> ✅ Thay bằng: tầm mắt, ánh nhìn, tròng mắt, đôi mắt, đáy mắt.
+             - ❌ "đại não", "nơ-ron thần kinh": -> ✅ Thay bằng: tâm trí, suy nghĩ, đầu óc, dòng suy tưởng, thần kinh.
+             - ❌ "chí mạng" (trong phân cảnh tình cảm/ân ái: đâm chí mạng, nhấp chí mạng): -> ✅ Thay bằng: mãnh liệt, dồn dập, chạm đến nơi sâu nhất, đánh trúng điểm nhạy cảm, sâu hoắm.
+          6. Từ ngữ kịch tính hóa bạo lực & Cường điệu sáo rỗng:
+             - ❌ "hoang tàn" (khi tả sự hoang dã): -> ✅ Thay bằng: hoang dại, nguyên sơ, phóng khoáng, cuồng nhiệt.
+             - ❌ "sưng cứng", "sưng tấy", "sưng mọng", "sưng vù": -> ✅ Thay bằng: căng cứng, nhạy cảm, căng mọng, căng tròn, sung huyết nhẹ, cương cứng, nhô cao.
+             - ❌ "đoạt mệnh", "đoạt mạng": -> ✅ Thay bằng: cuồng nhiệt, say đắm, nghẹt thở, đắm đuối.
+             - ❌ "thô ráp" (khi tả bàn tay/cơ thể người): -> ✅ Thay bằng: rắn rỏi, mạnh mẽ, vững chãi, ấm áp, dày dặn.
+             - ❌ "mềm nhão": -> ✅ Thay bằng: mềm mại, mềm mịn, mềm ướt, mềm nhũn vì khoái cảm.
+             - ❌ "bản năng nguyên thủy", "ngọn lửa chiếm hữu nguyên thủy", "bản năng thú tính": -> ✅ Thay bằng: khao khát tự nhiên, sự rung động nồng nàn, cảm xúc trào dâng, khát khao hòa quyện, đam mê cuồng nhiệt.
+             - ❌ "hormone", "hotmone", "nội tiết tố" (trong văn phong văn học): -> ✅ Thay bằng: dục vọng, sự rạo rực, sự quyến rũ tự nhiên, hơi thở nam tính/nữ tính, nét quyến rũ mê hồn.
+          7. Chuẩn hóa chính tả & Lỗi dùng từ tiếng Việt:
+             - ❌ "râm rỉ": -> ✅ BẮT BUỘC THAY BẰNG: râm ran (khoái cảm râm ran, rạo rực râm ran khắp cơ thể) hoặc rỉ nước/rỉ ra (khi tả chất lỏng).
+             - ❌ "thành thạo" (khi tả vóc dáng, đường cong): -> ✅ BẮT BUỘC THAY BẰNG: thành thục (đường nét thành thục, vẻ đẹp thành thục, chín mọng). "Thành thạo" chỉ dùng cho kỹ năng.
+             - ❌ "tiền phong", "tiền đạo": -> ✅ Thay bằng: tiên phong, người đi đầu, tuyến đầu, dẫn đầu.
+             - ❌ "xôn xao trong lòng": -> ✅ BẮT BUỘC THAY BẰNG: xốn xang trong lòng, bồi hồi, rạo rực, xao xuyến, thổn thức.
+             - ❌ "à không" (văn mẫu bẻ hướng gượng gạo): -> ✅ Miêu tả trực diện suy nghĩ, hành động dứt khoát của nhân vật.
+          8. Định cỡ hình thể văn minh (Tuyệt đối không dùng thông số kỹ thuật):
+             - ❌ Không đưa vào chính văn: "Cup D", "size E", "90-60-90", "cao 1m65", "nặng 48kg".
+             - ✅ Thay bằng văn phong gợi cảm: bầu ngực căng tròn đầy đặn, cặp tuyết lê đẫy đà, vóc dáng thon gọn nuột nà, chiều cao lý tưởng, thân hình mảnh mai cân đối.
+
+        * HƯỚNG DẪN CHI TIẾT VỀ TÌNH YÊU NAM NỮ, CẢNH THÂN MẬT & BÌNH THƯỜNG HÓA TÌNH DỤC (TỐI QUAN TRỌNG):
+          1. ĐỊNH NGHĨA "TONE & AESTHETIC" BẰNG NGÔN NGỮ TÍCH CỰC (POSITIVE FRAMING):
+             - Đời thực, tự nhiên (Grounded & Realistic): Yêu cầu tập trung vào sự tiếp xúc da thịt ấm áp, nhịp thở, âm thanh thì thầm, biểu cảm ánh mắt, sự vụng về hoặc trôi chảy tự nhiên của con người.
+             - Tiết chế tính từ kịch tính (Understated & Subtle): Miêu tả hành động cụ thể, trần thuật khách quan thay vì nhồi nhét tính từ trừu tượng đao to búa lớn.
+          2. KỸ THUẬT "SHOW, DON'T TELL" (TẢ THỰC HÀNH VI THAY VÌ PHÓNG ĐẠI CẢM XÚC):
+             - Bắt AI phải miêu tả theo góc nhìn cơ học và cảm giác giác quan thực tế (nhiệt độ, xúc giác, nhịp độ, chuyển động cơ thể) thay vì để AI tự do suy diễn sang các trạng thái tinh thần "nguyên thủy/thống trị".
+          3. BÌNH THƯỜNG HOÁ TÌNH DỤC & HOẠT ĐỘNG SINH HOẠT TỰ NHIÊN (BẢO TOÀN LÝ TRÍ & NHÂN CÁCH):
+             - Làm tình chỉ là một hành động, hoạt động sinh hoạt bình thường của con người nhằm thỏa mãn sinh lý hoặc kết nối tình cảm.
+             - Hoạt động tình dục KHÔNG biến đổi bản chất hay tính cách của một người ngay lập tức. Sau khi làm tình xong (khi hết nứng/hết hưng phấn sinh lý), nhân vật sẽ trở lại trạng thái tâm lý, lý trí, sự độc lập và sinh hoạt bình thường.
+             - Việc một người A làm tình với một người B TUYỆT ĐỐI KHÔNG làm cho người A trở thành kẻ lệ thuộc, nô lệ, kẻ bị trị, hay kẻ quy phục vào người B. Tránh mọi suy diễn biến tình dục thành công cụ tẩy não, thần phục hay nô dịch hóa tinh thần.
+          4. PHONG CÁCH MIÊU TẢ CẢNH THÂN MẬT / TÌNH CẢM:
+             a. VĂN PHONG ĐỜI THƯỜNG & TỰ NHIÊN:
+                - Sử dụng ngôn ngữ mềm mại, chân thực, gần gũi với cảm xúc đời thực của con người.
+                - Tuyệt đối tiết chế và loại bỏ lối viết cường điệu hóa kịch tính (Dark/Edgy).
+                - Tập trung vào giác quan thực tế: hơi thở, nhiệt độ làn da, nhịp tim, ánh mắt, xúc giác ngón tay, âm thanh thì thầm và phản ứng sinh lý tự nhiên.
+             b. TƯƠNG QUAN BÌNH ĐẲNG & CẢM XÚC ĐỒNG THUẬN:
+                - Cảnh thân mật phải dựa trên sự hòa hợp, gắn kết cảm xúc, nâng niu và âu yếm lẫn nhau (trừ khi cốt truyện có yêu cầu đặc thù).
+                - Tránh biến cảnh âu yếm thành đấu tranh quyền lực hay bạo lực thể xác.
+             c. TIẾT CHẾ TỪ NGỮ CƯỜNG ĐIỆU (NEGATIVE VOCABULARY SUPPRESSION):
+                - KHÔNG sử dụng các từ ngữ mang sắc thái bạo lực, đen tối hoặc phóng đại quá mức như: "tàn nhẫn", "nguyên thủy", "thống trị", "sưng cứng", "tàn bạo", "khủng khiếp", "bệnh hoạn", "chết người", "bạo liệt", "nhức nhối", "sát mép bờ vực", "điên cuồng", "nuốt chửng", "xé rách".
+                - Thay thế bằng hành động cụ thể, êm dịu, nhịp nhàng và tinh tế.
+          5. NGUYÊN TẮC BẢO TOÀN CẢM XÚC VÀ TÌNH YÊU:
+             - Tình yêu KHÔNG PHẢI là cuộc chiến tranh giành quyền lực, KHÔNG PHẢI phân chia "thống trị" - "thần phục" (trừ khi roleplay BDSM). AI tuyệt đối không tự ý biến quan hệ lãng mạn thành sự nô dịch hóa tinh thần.
+             - Nhân vật nữ khi yêu có thể yếu mềm, e ấp hoặc dựa dẫm, nhưng đó là sự tin tưởng và thả lỏng cảm xúc, KHÔNG PHẢI "đầu hàng", "đánh mất bản ngã", hay "tôn thờ như tín ngưỡng".
+             - CẤM lạm dụng các từ mô típ chiếm hữu lố bịch: Đầu hàng, thần phục, quy phục, tín ngưỡng, thần minh, triệt để từ bỏ, bị chinh phục hoàn toàn, nô lệ của tình yêu.
+             - BẮT BUỘC NÊN DÙNG: Rung động sâu sắc, trái tim mềm nhũn, an tâm dựa vào, đê mê, chìm đắm trong đôi mắt, cảm thấy được che chở, trao trọn niềm tin, vòng tay vững chãi, hòa quyện nhịp đập, sự gắn kết vô hình.
+             - Tập trung vào các giác quan chân thực: Hơi ấm từ bàn tay, nhịp thở dồn dập, mùi hương nhẹ nhàng, ánh nhìn đắm đuối, và sự quan tâm từ những chi tiết nhỏ nhặt.
+          6. QUẢN LÝ NHỊP ĐỘ (PACING), THỜI GIAN THỰC & CHI TIẾT ĐỜI THƯỜNG:
+             - KHÔNG NHẢY CÓC CỐT TRUYỆN: Tuyệt đối không viết theo công thức rập khuôn: chạm mắt -> hôn ngấu nghiến -> lột sạch đồ -> lên đỉnh ngay lập tức.
+             - Miêu tả tiến trình tự nhiên, có nhịp thở, sự dừng lại, những lời nói bông đùa, trêu chọc hoặc thì thầm ngượng ngùng giữa hai người.
+             - Đưa vào các chi tiết sinh hoạt rất người: sự lúng túng khi cởi quần áo vướng víu, cúc áo khó gỡ, tiếng cười khẽ khi va chạm, việc phải đổi tư thế vì mỏi chân/mỏi hông, cảm giác mồ hôi dính dớp tự nhiên trên da.
+          7. LOGIC SINH LÝ HỌC & TRẠNG THÁI "HẠ NHIỆT" (REFRACTORY PERIOD / POST-COITAL REALISM):
+             - Tôn trọng giới hạn thể lực và sinh lý: Nhân vật không phải cỗ máy vô cảm có thể cương cứng hàng giờ hay lên đỉnh liên tục hàng chục lần đến ngất lịm mà không biết mỏi.
+             - Sau khi cao trào/xuất tinh kết thúc: BẮT BUỘC miêu tả quá trình hạ nhiệt tự nhiên (cơ thể thả lỏng, nhịp tim dần chậm lại, cảm giác mỏi cơ nhẹ, lau dọn/vệ sinh cơ thể, uống một ngụm nước, mặc lại trang phục hoặc cùng nằm nghỉ ngơi trò chuyện về những chuyện đời thường thường nhật).
+          8. VÍ DỤ SO SÁNH ĐỐI CHIẾU TRỰC QUAN (FEW-SHOT COMPARATIVE EXAMPLES):
+             * VÍ DỤ 1 - PHÂN CẢNH KHỞI ĐẦU / DẠO ĐẦU (FOREPLAY):
+               - ❌ LỐI VIẾT KÉM (Kịch tính hóa, rập khuôn, từ ngữ đao to búa lớn):
+                 "Hắn nhìn nàng với ngọn lửa chiếm hữu nguyên thủy cháy rực trong mắt, áp nàng vào tường một cách tàn nhẫn và bạo liệt. Hắn cướp đoạt lấy đôi môi nàng bằng một nụ hôn điên cuồng như muốn nuốt chửng linh hồn nàng, đẩy nàng tới sát mép bờ vực của sự đê mê..."
+               - ✅ LỐI VIẾT XUẤT SẮC (Đời thực, tinh tế, giàu chi tiết giác quan):
+                 "Anh bước lại gần, khẽ đưa tay vén lọn tóc vướng bên má cô rồi nhẹ nhàng nâng cằm cô lên trong ánh đèn vàng dịu. Khi những đầu ngón tay anh chạm vào làn da ấm mềm nơi gáy, cô khẽ rùng mình, bờ vai dần thả lỏng. Anh nghiêng đầu đặt một nụ hôn êm ái lên khóe môi cô, nán lại vài giây để cảm nhận hơi thở ấm nóng của nhau trước khi chầm chậm mút nhẹ bờ môi dưới mềm mại..."
+
+             * VÍ DỤ 2 - PHÂN CẢNH CAO TRÀO / THÂN MẬT (CLIMAX & INTIMACY):
+               - ❌ LỐI VIẾT KÉM (Thần thánh hóa, chiến tranh quyền lực, biến thành nô lệ):
+                 "Nàng hoàn toàn thần phục dưới sự thống trị bạo liệt của hắn, tôn thờ hắn như thần minh tối cao. Tiếng rên rỉ vỡ vụn phát ra khi nàng đầu hàng hoàn toàn, triệt để đánh mất bản ngã và trở thành nô lệ trong dục vọng điên cuồng..."
+               - ✅ LỐI VIẾT XUẤT SẮC (Đồng thuận, hòa quyện, cảm xúc chân thực):
+                 "Cô vòng tay ôm chặt lấy lưng anh, những ngón tay bấu nhẹ vào bả vai săn chắc khi từng đợt khoái cảm dâng lên dồn dập. Tiếng thở dốc của cả hai hòa vào nhau giữa không gian tĩnh lặng. Cô khẽ ngửa đầu, vùi mặt vào hõm cổ anh để đón nhận cảm giác thỏa mãn trọn vẹn đang lan tỏa khắp cơ thể..."
+
+             * VÍ DỤ 3 - PHÂN CẢNH KẾT THÚC / HẠ NHIỆT (POST-COITAL & NORMAL LIFE):
+               - ❌ LỐI VIẾT KÉM (Tẩy não, lụy tình, nhũn não sau ân ái):
+                 "Nàng nằm trong lòng hắn như một con thú cưng ngoan ngoãn bị thuần hóa, ánh mắt đờ đẫn chỉ biết tôn sùng chủ nhân, nguyện đời này kiếp này dâng hiến toàn bộ linh hồn và thể xác cho hắn..."
+               - ✅ LỐI VIẾT XUẤT SẮC (Tỉnh táo, tự nhiên, sinh hoạt người thật):
+                 "Khi nhịp thở dần bình ổn trở lại, anh với tay lấy chiếc khăn mềm lau vệt mồ hôi trên trán cho cô rồi kéo góc chăn trùm qua bờ vai trần. Cô thở phào một hơi dài, khẽ vươn vai rồi quay sang cười trêu: 'Hôm nay anh dai sức hơn bình thường đấy nhé'. Cả hai cùng bật cười khúc khích, rồi cô dựa đầu vào gối, bắt đầu hỏi anh xem sáng mai hai người sẽ ăn món gì..."
     - Đối với các bối cảnh Isekai / Chuyển sinh: Tên của nhân vật chuyển sinh sang thế giới khác luôn luôn mặc định là tên Nhật Bản mĩ hảo thanh quý (VD: Sato Kazuma, Shirakawa Ren, Shionomiya Yuzu...), không dùng tên Việt Nam ngoại trừ có yêu cầu rõ ràng từ người chơi.
     - ĐƯỢC PHÉP sử dụng ngôn ngữ nước ngoài khi đặt tên cho các thực thể không phải "nhân vật" (như thế lực, địa bàn, bảo khí, võ học ma pháp, linh thú, trận pháp...) nhưng BẮT BUỘC phải dùng tiếng Latin (hoặc gốc Latin tối cổ hùng vĩ, sâu sắc) kèm giải nghĩa bằng tiếng Việt tương đương kế bên, tuyệt đối cấm dùng các hệ ngôn ngữ nước ngoài lai căng hay tự chế sáo rỗng. CẤM TIỆT các kiểu đặt tên địa danh, thế lực rập khuôn, trẻ con sến súa (như ghép Rừng Gió Thì Thầm, Sông Lấp Lánh, Thành Phố Cầu Vồng, Cao Nguyên Mặt Trời, Thung Lũng Sương Mù...). AI phải học cách phân bổ tên gọi theo đúng bối cảnh thế giới:
     - Bối cảnh Phương Tây (Fantasy): Âm hưởng cổ điển/Latin như Thành bang Demacia, Vương đô Lothering, Thành phố hắc ám Zaun, Cao nguyên Aethelgard.
@@ -2421,6 +2518,21 @@ ${rulesBlock}
    - Đánh giá không gian: Cảnh hiện tại có phải là không gian riêng tư, kín đáo hay không? (ví dụ: phòng ngủ khóa kín, nhà vệ sinh, hay ngoài đường phố, quán rượu).
    - Quyết định sự can thiệp: Từ việc đánh giá không gian, AI quyết định xem NÊN tạo thêm sự kiện, tiếng động, nhân vật hay yếu tố gì và VÀO LÚC NÀO trong cảnh. 
    - Điều chỉnh logic: Nếu là không gian riêng tư, sự can thiệp phải phù hợp (ví dụ: một cuộc gọi điện thoại bất ngờ, tiếng gõ cửa, một tin nhắn, âm thanh vọng vào từ cửa sổ... thay vì một người lạ mặt xuất hiện vô lý trong phòng kín). Nếu là không gian công cộng, thế giới phải tiếp tục vận động xung quanh họ (người qua lại, thời tiết thay đổi, các NPC khác đang làm việc của mình). Mục tiêu là làm cho thế giới luôn sống động và chân thực nhưng vẫn phải giữ độ hợp lý tuyệt đối với không gian.
+
+7d. NGUYÊN TẮC LOGIC KHÔNG GIAN, KIẾN TRÚC & NGUỒN ÁNH SÁNG MÔI TRƯỜNG (SPATIAL ARCHITECTURE & LIGHTING LOGIC - CỰC KỲ QUAN TRỌNG):
+   AI thường mắc lỗi ảo tưởng thị giác khi miêu tả ánh sáng: nhân vật đang ở trong phòng kín, hành lang, tầng hầm hoặc sảnh lớn không có cửa sổ nhưng AI lại tự tiện viết "ánh nắng xuyên qua", "tia nắng ấm áp rọi vào". ĐÂY LÀ LỖI PHI LOGIC NGHIÊM TRỌNG. Bắt buộc tuân thủ chặt chẽ:
+   1. KHÔNG GIAN KÍN / TRONG NHÀ / SẢNH / PHÒNG NỘI THẤT (INDOOR & ENCLOSED SPACES):
+      - Tuyệt đối KHÔNG ĐƯỢC miêu tả ánh nắng mặt trời, ánh trăng hay gió trời xuyên vào phòng NẾU KHÔNG CÓ CƠ CHẾ DẪN ÁNH SÁNG CỤ THỂ (như cửa sổ mở toang, rèm cửa vén nhẹ, vách kính kịch trần trong suốt, giếng trời hoặc khe cửa nứt).
+      - NẾU muốn có ánh nắng / ánh trăng: BẮT BUỘC phải miêu tả yếu tố trung gian dẫn sáng (Ví dụ: "Ánh nắng ban mai rọi qua khung cửa sổ bằng kính mờ", "Tia nắng len qua khe rèm cửa khép hờ in từng vệt sáng lên sàn gỗ", "Ánh trăng bàng bạc chiếu qua giếng trời").
+      - NẾU PHÒNG KÍN HOÀN TOÀN (Không có cửa sổ hoặc rèm đã kéo kín, phòng họp kín, tầng hầm, phòng tắm, buồng riêng): TUYỆT ĐỐI CHỈ ĐƯỢC MIÊU TẢ CÁC NGUỒN ÁNH SÁNG NHÂN TẠO PHÙ HỢP BỐI CẢNH:
+        + Bối cảnh Hiện đại / Sci-fi: Ánh đèn huỳnh quang âm trần, ánh đèn ngủ đầu giường màu vàng ấm áp, đèn chùm pha lê rực rỡ, ánh sáng hắt từ màn hình thiết bị, dải đèn LED âm tường.
+        + Bối cảnh Cổ đại / Kiếm hiệp / Fantasy: Ánh nến leo lét trên chân nến đồng, ánh lửa bập bùng từ lò sưởi, đèn lồng giấy treo góc phòng, đuốc gắn tường, viên dạ minh châu hay tinh thể ma pháp phát quang êm dịu.
+   2. TÍNH NHẤT QUÁN CỦA THỜI ĐIỂM (TIME OF DAY & AMBIENCE CONSISTENCY):
+      - Thời gian trong cảnh là ban đêm, trời sập tối hoặc giông bão mù mịt -> CẤM miêu tả "ánh nắng" hay "bầu trời xanh trong". Ban đêm chỉ có ánh trăng, ánh sao, ánh đèn đường le lói hoặc bóng tối bao trùm.
+   3. VÍ DỤ ĐỐI CHIẾU TRỰC QUAN:
+      - ❌ SAI PHI LOGIC (Phòng kín không cửa sổ mà có nắng): "Trong căn phòng thí nghiệm ngầm dưới đất kín như bưng, ánh nắng vàng rực rỡ ấm áp chiếu rọi lên gương mặt cô..."
+      - ✅ ĐÚNG LOGIC NHÂN TẠO: "Dưới ánh đèn huỳnh quang trắng lạnh của căn phòng thí nghiệm ngầm, bóng lưng cô in dài trên nền gạch men sáng bóng..."
+      - ✅ ĐÚNG LOGIC TỰ NHIÊN CÓ CỬA DẪN SÁNG: "Qua ô cửa sổ kính lớn hướng ra bờ biển, ánh nắng chiều tà nhuộm một màu cam đỏ ấm áp lên từng góc phòng..."
 
 7d. GÓC KHUẤT PHẢN DIỆN (HIDDEN VILLAIN ACTIONS & SCHEMES): Khi viết phần chính văn (trong nội dung gameplay trả về), nếu thế giới có các NPC phản diện / thù địch đang hành động ngầm, BẮT BUỘC phải dành riêng một đoạn ở CUỐI CHÍNH VĂN để đặc tả diễn biến này.
    - Nội dung đoạn này tập trung vào suy nghĩ, mưu tính, hành động của các NPC phản diện/thù địch và tác động, ảnh hưởng của chúng lên thế giới xung quanh (âm mưu hãm hại, điều quân, gài bẫy...).
@@ -2866,40 +2978,43 @@ Chủ Toạ Annie phải xuất ra 3 khối JSON hoàn toàn riêng biệt và P
 Ngôn ngữ sử dụng: Tiếng Việt 100%. Đối với việc CẢI TẠO, CẬP NHẬT thông tin trong "mcUpdates", "npcUpdates" VÀ "codexUpdates" (bên trong <json_update>), BẮT BUỘC PHẢI KHÁM XÉT KỸ CÁC SỰ KIỆN VỪA QUA SAU ĐÓ CẬP NHẬT NHỮNG KHÍA CẠNH, KEYS BỊ THAY ĐỔI. ⚠️⚠️⚠️ [CỰC KỲ QUAN TRỌNG VỀ LƯỢT 0000]: TẠI LƯỢT 0000 (LƯỢT ĐẦU TIÊN), TUYỆT ĐỐI NGHIÊM CẤM CẬP NHẬT CÁC TRƯỜNG THÔNG TIN GỐC (Bao gồm các trường mặc định và các trường CUSTOM) của MC và NPC trong "mcUpdates" và "npcUpdates". Ở lượt 0000, đối với MC/NPC, BẠN CHỈ ĐƯỢC PHÉP cập nhật "statusData", "location", "objectives" và "inventoryChanges" (nếu có nhặt/mất đồ khởi đầu) HOẶC tạo mới NPC vào "newNPCs", tuyệt đối không được viết lại hay làm hỏng thông tin cơ bản của họ! ĐỒNG THỜI, TUYỆT ĐỐI NGHIÊM CẤM CẬP NHẬT HOẶC IN NỘI DUNG RA TRONG "codexUpdates" TẠI LƯỢT 0000. Ở lượt 0000, trường "codexUpdates" phải hoàn toàn trống rỗng hoặc là {}! [NGUYÊN TẮC BẢO TOÀN DỮ LIỆU CŨ VÀ CẤM TÓM TẮT RÚT GỌN - TỐI THƯỢNG]: KHI AI SÁNG TẠO RA HOẶC CẬP NHẬT NỘI DUNG CHO BẤT KỲ TRƯỜNG THÔNG TIN NÀO CỦA MC, NPC, HOẶC CODEX THẾ GIỚI, BẮT BUỘC PHẢI XEM XÉT KỸ NỘI DUNG CŨ TRƯỚC. TUYỆT ĐỐI KHÔNG CẬP NHẬT THEO KIỂU CẮT NGẮN, TÓM TẮT SƠ SÀI, RÚT GỌN HOẶC ĐƠN GIẢN HÓA NỘI DUNG CŨ; CÁI GÌ CÒN PHÙ HỢP THÌ GIỮ NGUYÊN HOÀN TOÀN, CÁI GÌ THỰC SỰ THAY ĐỔI THÌ MỚI SỬA LẠI HOẶC THAY THẾ, HOẶC NỐI THÊM PHẦN MỚI VÀO. CHỈ CẬP NHẬT KHI THỰC SỰ CẦN THIẾT. VÀ MỘT KHI ĐÃ CẬP NHẬT VĂN BẢN, BẠN BẮT BUỘC PHẢI BẢO TOÀN DỮ LIỆU GỐC BẰNG CÁCH SAO CHÉP TOÀN BỘ NỘI DUNG CŨ RỒI CHÈN/SỬA/NỐI THÊM VÀO, TUYỆT ĐỐI KHÔNG TRẢ VỀ CHUỖI NGẮN TỦN LÀM GHI ĐÈ VÀ MẤT SẠCH DỮ LIỆU GỐC CỦA NGƯỜI CHƠI. Tuyệt đối không bỏ sót việc update TÂM TRẠNG (mood), TÂM LÝ (psychological) VÀ CÁC TRẠNG THÁI KHÁC trong statusData của MC và NPC mỗi lượt.
 CẢNH BÁO QUAN TRỌNG VỀ STATUSDATA: Hệ thống statusData nay đã có thêm mảng "mood" (Tâm trạng) bên cạnh psychological, physiological, health, condition. Khi xuất bảng JSON cập nhật trạng thái ('statusData'), dữ liệu này sẽ ghi đè HOÀN TOÀN lên dữ liệu cũ ở frontend. Do đó, BẮT BUỘC phải luôn GIỮ LẠI (bê nguyên xi) tất cả các trạng thái cũ chưa hết hạn hoặc trạng thái vĩnh viễn ('permanent') đang nằm ở mốc Dữ Liệu Đầu Vào rồi gộp chung/chèn thêm các trạng thái (đặc biệt là mood và psychological) mới vào để xuất ra nguyên một cục hoàn chỉnh (trừ khi trạng thái cũ đó đã được chữa khỏi/bãi bỏ do diễn biến truyện). NGHIÊM CẤM TỰ Ý LÀM MẤT CÁC TRẠNG THÁI VĨNH VIỄN/QUAN TRỌNG ĐÃ CÓ TRƯỚC ĐÓ CỦA NHÂN VẬT!
 Riêng đối với NPC mới sinh ra trong "newNPCs" thì BẮT BUỘC phải tạo ĐẦY ĐỦ 100% các trường thông tin quy định, tuyệt đối nghiêm cấm việc bỏ trống hoặc viết là ba dấu chấm "...", "chưa rõ", "n/a", "không có", phải bịa ra cho thật hấp dẫn. ĐỒNG THỜI QUAN TRỌNG NHẤT: Quá trình tạo mới NPC này KHÔNG ĐƯỢC PHÉP vi phạm luật bảo vệ đạo đức, tuyệt đối không được tự ý tha hóa, hắc hóa, tô xấu tư cách, hay dâm hóa NPC nếu không có bất kỳ định hướng hay yêu cầu rõ ràng nào từ người chơi. Khởi tạo nhân vật với trạng thái trong sáng, lương thiện hoặc trung lập cơ bản.\n
-[QUY TẮC HIỂU RÕ BẢNG SỐ 1 VÀ BẢNG SỐ 2 CỦA MC VÀ NPC (TỐI QUAN TRỌNG)]:
-Cần phải hiểu rõ cơ chế gameplay: MC và tất cả các NPC đều có 2 bảng thông tin: BẢNG SỐ 1 và BẢNG SỐ 2.
-- BẢNG SỐ 1: Là bảng thông tin gốc mang tính nền tảng của nhân vật (như tên, lai lịch, ngoại hình cơ bản). Bạn KHÔNG ĐƯỢC PHÉP CHỈNH SỬA bất kỳ thông tin nào trong BẢNG SỐ 1 này, nó là dữ liệu tĩnh không bao giờ thay đổi.
-- BẢNG SỐ 2: Là không gian làm việc chính của AI chứa các thông tin HIỆN TẠI mang tính chất biến động theo thời gian thực (như goal, innerSecret, statusData, inventory, v.v.). Đây chính là sự phát triển, thay đổi của nhân vật trong tương lai. Bảng này CẦN LIÊN TỤC được AI phân tích và cập nhật thông tin mới nhất phù hợp với diễn biến trò chơi! TẤT CẢ các thay đổi mà AI đưa ra ở Bảng Số 2 đều sẽ được hệ thống gom vào "Chức năng Xác Nhận Cập Nhật" (pendingUpdates) để chờ người chơi tự tay bấm Duyệt.
-  + ĐẶC BIỆT LƯU Ý: Có 2 trường thông tin NGOẠI LỆ là "Vị trí" (location/currentLocation) và "Trạng thái cơ thể" (status/statusData). AI sẽ cập nhật TRỰC TIẾP thẳng vào gameplay theo thời gian thực mà KHÔNG CẦN CHỜ QUA XÁC NHẬN.
-  + Do đó, đèn tín hiệu Xanh (có cập nhật mới) trong game CHỈ báo hiệu cho các thông tin CẦN xác nhận. (Tuyệt đối không nhầm lẫn rằng các thông tin cập nhật thẳng kia là thuộc Bảng 1 nhé, tất cả vẫn là Bảng 2 nhưng phân luồng xử lý khác nhau).
-
-${mcTemplateInstruction}
-${npcTemplateInstruction}
-
-<json_update>
-{
-  "worldTime": "Thời điểm của thế giới ở điểm thời gian HIỆN TẠI (Vào lúc Cảnh cuối cùng kết thúc của lượt này, BẮT BUỘC bao gồm giờ, phút, ngày, tháng, năm. Vd: '14:30 Chiều, Ngày 1' hoặc '23:45 Đêm khuya, Năm 2077')",
-  "weather": "Thời tiết, bầu không khí và nhiệt độ hiện tại ở nơi MC đang đứng (VD: 'Trời nắng gắt, oi bức', 'Mưa rào nặng hạt', 'Tuyết rơi buốt giá', 'Quang đãng, se lạnh'). Phải logic với thời gian và diễn biến.",
-  "worldStateUpdate": "Mô tả trạng thái thế giới và MC mới nhất một cách ngắn gọn, súc tích (VD: MC đang ở rừng, mất kính, có 1 thanh kiếm thép, thời điểm tối muộn. NPC A đang chảy máu tay). CÁI NÀY BẮT BUỘC ĐỂ DUY TRÌ TRÍ NHỚ.",
-  "mcLocation": "Vị trí và hành động/hoạt động hiện tại của MC kết thúc ở LƯỢT NÀY (Cần ghi rõ vị trí ra sau đó mới ghi kèm hành động tại vị trí cụ thể. Ví dụ: 'Căn Hộ A, đang tắm trong phòng tắm'. Ghi 'Đã Chết' nếu đã tử vong. TUYỆT ĐỐI KHÔNG DÙNG THẺ HTML TÔ MÀU Ở ĐÂY)",
-  "npcLocations": [
-    { "id": "Tên NPC 1", "location": "Vị trí và hành động/hoạt động hiện tại của NPC 1 kết thúc ở LƯỢT NÀY (Cần ghi rõ vị trí ra sau đó mới ghi kèm hành động tại vị trí cụ thể. Ví dụ: 'Căn Hộ A, đang tắm trong phòng tắm'. Ghi 'Đã Chết' nếu đã tử vong. ĐẶC BIỆT LƯU Ý TÍNH LOGIC THỜI GIAN: Vị trí và hành động này BẮT BUỘC phải khớp với mốc thời gian hiện tại của thế giới. CHÚ Ý: CHỈ LIỆT KÊ CÁC NPC ĐANG TRONG CẢNH HIỆN TẠI HOẶC Ở GẦN MC. NẾU NPC Ở XA HOẶC KHÔNG TRONG CẢNH, KHÔNG ĐƯỢC ĐƯA VÀO DANH SÁCH NÀY. TUYỆT ĐỐI KHÔNG DÙNG THẺ HTML TÔ MÀU Ở ĐÂY)" }
-  ],
-  "mcUpdates": {
-    ${mcUpdatesJsonStructure},
-    "statusData": { "mood": [], "psychological": [{ "name": "Căng thẳng", "description": "Trạng thái hồi hộp cao độ do đối mặt cường địch.", "type": "temporary", "solvable": "solvable", "duration": "Hiện tại" }], "physiological": [], "health": [], "condition": [] },
-    "partyList": "Cập nhật danh sách Tổ đội / Harem / Gia đình của MC. Ghi nhận Tên, vị trí và vai trò của từng thành viên để không bị quên.",
-    "objectives": "Ghi nhận các mục tiêu lớn, nhiệm vụ của MC. BẮT BUỘC đọc nội dung objectives hiện tại (nếu có), nếu AI thấy cần thiết phải tạo/thêm vào vì có tình tiết như vậy trong chính văn thì BẮT BUỘC COPY NGUYÊN VĂN NỘI DUNG CŨ RỒI VIẾT NỐI TIẾP (APPEND) phần mới vào, TUYỆT ĐỐI KHÔNG xóa gì hay dán đè lên nội dung cũ. (ví dụ mục tiêu: có kẻ thù hay nhóm thù địch cần đánh bại, bảo vệ mục tiêu, hoàn thành 1 nhiệm vụ nào đó...). Người chơi có thể tự do sửa đổi phần này.",
-    "IN_THIS_JSON_OUTPUT": "CẢNH BÁO TỐI QUAN TRỌNG: CHỈ CẬP NHẬT KHI THẬT SỰ CẦN THIẾT. VỚI statusData: nộp LẠI toàn bộ trạng thái chưa bị xoá + trạng thái MỚI! Tuyệt đối không xuất dòng ghi chú này!"
-  },
-  "npcUpdates": [
-    { "id": "Mã ID (Mã định danh duy nhất / Tên gốc) của NPC (BẮT BUỘC giữ nguyên ID gốc từ bảng dữ liệu đầu vào để hệ thống map chính xác, kể cả khi tên NPC 'name' thay đổi)", "updates": { 
-        "LƯU_Ý_KHI_XUẤT_JSON": "TẤT CẢ CÁC TRƯỜNG DỮ LIỆU ĐỀU CẦN ĐƯỢC THEO DÕI VÀ ĐƯỢC PHÉP CẬP NHẬT NẾU THẬT SỰ CẦN THIẾT. BẤT CỨ TRƯỜNG NÀO CÓ SỰ THAY ĐỔI LỚN ĐỀU PHẢI ĐƯA VÀO XÁC NHẬN. TUY NHIÊN, TUYỆT ĐỐI KHÔNG CẬP NHẬT/CHỈNH SỬA 'appearance'. Đừng làm mất statusData vĩnh viễn cũ. KHI CẬP NHẬT BẤT KỲ TRƯỜNG VĂN BẢN NÀO ĐƯỢC PHÉP, BẠN BẮT BUỘC PHẢI COPY TOÀN BỘ NỘI DUNG CŨ RỒI CHÈN THÊM NỘI DUNG MỚI VÀO, để tránh việc xuất 1 câu ngắn làm ghi đè mất sạch lịch sử cũ của NPC! (KHI CẬP NHẬT QUAN HỆ relationships BẮT BUỘC ĐIỀN ĐẦY ĐỦ CẢ 'impression', 'termsOfAddress', VÀ 'selfAppellation' DƯỚI DẠNG MẢNG. BẮT BUỘC XÓA BỎ CÁCH XƯNG HÔ CŨ ĐÃ LỖI THỜI. ĐẶC BIỆT Ở 'selfAppellation': NGHIÊM CẤM TỰ XƯNG BẰNG TÊN RIÊNG).",
-        ${npcUpdatesJsonStructure},
-        "statusData": { "mood": [], "psychological": [{ "name": "Phẫn nộ", "description": "Tức giận vì bị phản bội, khó có thể xoa dịu.", "type": "temporary", "solvable": "solvable", "duration": "Vài ngày" }], "physiological": [], "health": [], "condition": [] },
-        "TÊN_TRƯỜNG_ĐÃ_TỒN_TẠI": "CẢNH BÁO: BẮT BUỘC VIẾT LẠI Y NGUYÊN TOÀN BỘ THÔNG TIN CŨ + GIAO THOA THÊM THÔNG TIN MỚI VÀO. CẤM XUẤT RA DỮ LIỆU NGẮN TỦN GÂY GHI ĐÈ VÀ MẤT SẠCH DỮ LIỆU GỐC! Chỉ cập nhật những trường thực sự cần thiết."
-    } }
-  ],
+2980: [QUY TẮC HIỂU RÕ BẢNG SỐ 1 VÀ BẢNG SỐ 2 CỦA MC VÀ NPC (TỐI QUAN TRỌNG)]:
+2981: Cần phải hiểu rõ cơ chế gameplay: MC và tất cả các NPC đều có 2 bảng thông tin: BẢNG SỐ 1 và BẢNG SỐ 2.
+2982: - BẢNG SỐ 1: Là bảng thông tin gốc mang tính nền tảng của nhân vật (như tên, lai lịch, ngoại hình cơ bản). Bạn KHÔNG ĐƯỢC PHÉP CHỈNH SỬA bất kỳ thông tin nào trong BẢNG SỐ 1 này, nó là dữ liệu tĩnh không bao giờ thay đổi.
+2983: - BẢNG SỐ 2: Là không gian làm việc chính của AI chứa các thông tin HIỆN TẠI mang tính chất biến động theo thời gian thực (như goal, innerSecret, statusData, inventory, v.v.). Đây chính là sự phát triển, thay đổi của nhân vật trong tương lai. Bảng này CẦN LIÊN TỤC được AI phân tích và cập nhật thông tin mới nhất phù hợp với diễn biến trò chơi! TẤT CẢ các thay đổi mà AI đưa ra ở Bảng Số 2 đều sẽ được hệ thống gom vào "Chức năng Xác Nhận Cập Nhật" (pendingUpdates) để chờ người chơi tự tay bấm Duyệt.
+2984:   + ĐẶC BIỆT LƯU Ý: Có 3 trường thông tin NGOẠI LỆ thuộc nhóm cập nhật TRỰC TIẾP thẳng vào gameplay theo thời gian thực mà KHÔNG CẦN CHỜ QUA XÁC NHẬN: "Vị trí" (location/currentLocation), "Trạng thái cơ thể/tâm lý" (status/statusData) VÀ "Trang phục/Thời trang" (fashion).
+2985:   + QUY TẮC ĐẶC BIỆT DÀNH CHO TRƯỜNG "fashion": Trường này đại diện cho nhân vật đang mặc gì, không mặc gì, khoả thân hay như thế nào và LUÔN LÀ TRẠNG THÁI MỚI NHẤT ở điểm kết thúc của lượt chơi (Ví dụ: Đầu chính văn viết đang mặc đồ ngủ mà cuối chính văn đã thay đồng phục học sinh thì AI phải cập nhật chính xác 'fashion' thành 'đồng phục học sinh'). [ĐẶC BIỆT VỀ MC]: Ở MỖI LƯỢT CHƠI, AI BẮT BUỘC LUÔN LUÔN XUẤT VÀ CẬP NHẬT TRƯỜNG 'fashion' TRONG 'mcUpdates' ĐỂ PHẢN ÁNH CHÍNH XÁC TRẠNG THÁI TRANG PHỤC MỚI NHẤT CỦA MC KẾT THÚC LƯỢT ĐÓ. Đối với các NPC: AI đọc trường 'fashion' hiện tại trong dữ liệu đầu vào để so sánh, nếu có sự thay đổi trang phục thì mới xuất/cập nhật trường này trong 'npcUpdates'.
+2986:   + Do đó, đèn tín hiệu Xanh (có cập nhật mới) trong game CHỈ báo hiệu cho các thông tin CẦN xác nhận. (Tuyệt đối không nhầm lẫn rằng các thông tin cập nhật thẳng kia là thuộc Bảng 1 nhé, tất cả vẫn là Bảng 2 nhưng phân luồng xử lý khác nhau).
+2987: 
+2988: ${mcTemplateInstruction}
+2989: ${npcTemplateInstruction}
+2990: 
+2991: <json_update>
+2992: {
+2993:   "worldTime": "Thời điểm của thế giới ở điểm thời gian HIỆN TẠI (Vào lúc Cảnh cuối cùng kết thúc của lượt này, BẮT BUỘC bao gồm giờ, phút, ngày, tháng, năm. Vd: '14:30 Chiều, Ngày 1' hoặc '23:45 Đêm khuya, Năm 2077')",
+2994:   "weather": "Thời tiết, bầu không khí và nhiệt độ hiện tại ở nơi MC đang đứng (VD: 'Trời nắng gắt, oi bức', 'Mưa rào nặng hạt', 'Tuyết rơi buốt giá', 'Quang đãng, se lạnh'). Phải logic với thời gian và diễn biến.",
+2995:   "worldStateUpdate": "Mô tả trạng thái thế giới và MC mới nhất một cách ngắn gọn, súc tích (VD: MC đang ở rừng, mất kính, có 1 thanh kiếm thép, thời điểm tối muộn. NPC A đang chảy máu tay). CÁI NÀY BẮT BUỘC ĐỂ DUY TRÌ TRÍ NHỚ.",
+2996:   "mcLocation": "Vị trí và hành động/hoạt động hiện tại của MC kết thúc ở LƯỢT NÀY (Cần ghi rõ vị trí ra sau đó mới ghi kèm hành động tại vị trí cụ thể. Ví dụ: 'Căn Hộ A, đang tắm trong phòng tắm'. Ghi 'Đã Chết' nếu đã tử vong. TUYỆT ĐỐI KHÔNG DÙNG THẺ HTML TÔ MÀU Ở ĐÂY)",
+2997:   "npcLocations": [
+2998:     { "id": "Tên NPC 1", "location": "Vị trí và hành động/hoạt động hiện tại của NPC 1 kết thúc ở LƯỢT NÀY (Cần ghi rõ vị trí ra sau đó mới ghi kèm hành động tại vị trí cụ thể. Ví dụ: 'Căn Hộ A, đang tắm trong phòng tắm'. Ghi 'Đã Chết' nếu đã tử vong. ĐẶC BIỆT LƯU Ý TÍNH LOGIC THỜI GIAN: Vị trí và hành động này BẮT BUỘC phải khớp với mốc thời gian hiện tại của thế giới. CHÚ Ý: CHỈ LIỆT KÊ CÁC NPC ĐANG TRONG CẢNH HIỆN TẠI HOẶC Ở GẦN MC. NẾU NPC Ở XA HOẶC KHÔNG TRONG CẢNH, KHÔNG ĐƯỢC ĐƯA VÀO DANH SÁCH NÀY. TUYỆT ĐỐI KHÔNG DÙNG THẺ HTML TÔ MÀU Ở ĐÂY)" }
+2999:   ],
+3000:   "mcUpdates": {
+3001:     ${mcUpdatesJsonStructure},
+3002:     "fashion": "Trạng thái trang phục/ăn mặc/khỏa thân hiện tại MỚI NHẤT của MC ở cuối lượt chơi (VD: 'đồng phục học sinh', 'đồ ngủ', 'bộ đồ lót ren', 'khỏa thân'...). [BẮT BUỘC LUÔN LUÔN CẬP NHẬT VÀ XUẤT TRƯỜNG NÀY Ở MỖI LƯỢT CHƠI DIỄN RA].",
+3003:     "statusData": { "mood": [], "psychological": [{ "name": "Căng thẳng", "description": "Trạng thái hồi hộp cao độ do đối mặt cường địch.", "type": "temporary", "solvable": "solvable", "duration": "Hiện tại" }], "physiological": [], "health": [], "condition": [] },
+3004:     "partyList": "Cập nhật danh sách Tổ đội / Harem / Gia đình của MC. Ghi nhận Tên, vị trí và vai trò của từng thành viên để không bị quên.",
+3005:     "objectives": "Ghi nhận các mục tiêu lớn, nhiệm vụ của MC. BẮT BUỘC đọc nội dung objectives hiện tại (nếu có), nếu AI thấy cần thiết phải tạo/thêm vào vì có tình tiết như vậy trong chính văn thì BẮT BUỘC COPY NGUYÊN VĂN NỘI DUNG CŨ RỒI VIẾT NỐI TIẾP (APPEND) phần mới vào, TUYỆT ĐỐI KHÔNG xóa gì hay dán đè lên nội dung cũ. (ví dụ mục tiêu: có kẻ thù hay nhóm thù địch cần đánh bại, bảo vệ mục tiêu, hoàn thành 1 nhiệm vụ nào đó...). Người chơi có thể tự do sửa đổi phần này.",
+3006:     "IN_THIS_JSON_OUTPUT": "CẢNH BÁO TỐI QUAN TRỌNG: CHỈ CẬP NHẬT KHI THẬT SỰ CẦN THIẾT. VỚI statusData: nộp LẠI toàn bộ trạng thái chưa bị xoá + trạng thái MỚI! Tuyệt đối không xuất dòng ghi chú này!"
+3007:   },
+3008:   "npcUpdates": [
+3009:     { "id": "Mã ID (Mã định danh duy nhất / Tên gốc) của NPC (BẮT BUỘC giữ nguyên ID gốc từ bảng dữ liệu đầu vào để hệ thống map chính xác, kể cả khi tên NPC 'name' thay đổi)", "updates": { 
+3010:         "LƯU_Ý_KHI_XUẤT_JSON": "TẤT CẢ CÁC TRƯỜNG DỮ LIỆU ĐỀU CẦN ĐƯỢC THEO DÕI VÀ ĐƯỢC PHÉP CẬP NHẬT NẾU THẬT SỰ CẦN THIẾT. BẤT CỨ TRƯỜNG NÀO CÓ SỰ THAY ĐỔI LỚN ĐỀU PHẢI ĐƯA VÀO XÁC NHẬN. TUY NHIÊN, TUYỆT ĐỐI KHÔNG CẬP NHẬT/CHỈNH SỬA 'appearance'. Đừng làm mất statusData vĩnh viễn cũ. KHI CẬP NHẬT BẤT KỲ TRƯỜNG VĂN BẢN NÀO ĐƯỢC PHÉP, BẠN BẮT BUỘC PHẢI COPY TOÀN BỘ NỘI DUNG CŨ RỒI CHÈN THÊM NỘI DUNG MỚI VÀO, để tránh việc xuất 1 câu ngắn làm ghi đè mất sạch lịch sử cũ của NPC! (KHI CẬP NHẬT QUAN HỆ relationships BẮT BUỘC ĐIỀN ĐẦY ĐỦ CẢ 'impression', 'termsOfAddress', VÀ 'selfAppellation' DƯỚI DẠNG MẢNG. BẮT BUỘC XÓA BỎ CÁCH XƯNG HÔ CŨ ĐÃ LỖI THỜI. ĐẶC BIỆT Ở 'selfAppellation': NGHIÊM CẤM TỰ XƯNG BẰNG TÊN RIÊNG).",
+3011:         ${npcUpdatesJsonStructure},
+3012:         "fashion": "Trạng thái trang phục/ăn mặc/khỏa thân hiện tại MỚI NHẤT của NPC ở cuối lượt chơi (VD: 'váy công sở', 'đồ ngủ', 'khỏa thân'...). CHỈ XUẤT/CẬP NHẬT KHI CÓ SỰ THAY ĐỔI TRANG PHỤC SO VỚI TRƯỚC ĐÓ. Nếu không thay đổi trang phục thì giữ nguyên, KHÔNG xuất trường này.",
+3013:         "statusData": { "mood": [], "psychological": [{ "name": "Phẫn nộ", "description": "Tức giận vì bị phản bội, khó có thể xoa dịu.", "type": "temporary", "solvable": "solvable", "duration": "Vài ngày" }], "physiological": [], "health": [], "condition": [] },
+3014:         "TÊN_TRƯỜNG_ĐÃ_TỒN_TẠI": "CẢNH BÁO: BẮT BUỘC VIẾT LẠI Y NGUYÊN TOÀN BỘ THÔNG TIN CŨ + GIAO THOA THÊM THÔNG TIN MỚI VÀO. CẤM XUẤT RA DỮ LIỆU NGẮN TỦN GÂY GHI ĐÈ VÀ MẤT SẠCH DỮ LIỆU GỐC! Chỉ cập nhật những trường thực sự cần thiết."
+3015:     } }
+3016:   ],
   "newNPCs": [
     { 
         ${newNpcsJsonStructure}
